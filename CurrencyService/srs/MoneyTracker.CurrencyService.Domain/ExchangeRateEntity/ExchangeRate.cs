@@ -30,6 +30,14 @@ namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
         /// </summary>
         public RateSource RateSource { get; protected set; }
 
+        internal ExchangeRate(ExchangeRateBuilder builder)
+        {
+            this.CurrencyPair = builder.Pair;
+            this.RateSource = builder.RateSource;
+            Update(builder.Rate);
+            RateDate = builder.Date;
+        }
+
         /// <summary>
         /// Обновляет курс валют
         /// </summary>
@@ -37,6 +45,10 @@ namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
         /// <exception cref="InvalidOperationException"></exception>
         public void Update(decimal rate)
         {
+            if (CurrencyPair is null)
+            {
+                throw new InvalidOperationException("Нельзя обновить курс для неустановленной валютной пары");
+            }
             if (rate < 0m)
             {
                 throw new InvalidOperationException($"Курс не может быть меньше нуля. " +
@@ -48,6 +60,32 @@ namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
             }
             AddDomainEvent(new ExchangeRateUpdatedDomainEvent(Id, Rate, rate));
             Rate = rate;
+        }
+
+        /// <summary>
+        /// Устанавливает валютную пару
+        /// </summary>
+        internal void SetCurrencyPair(CurrencyPair currencyPair)
+        {
+            if (CurrencyPair is null)
+            {
+                CurrencyPair = currencyPair;
+            }
+        }
+
+        /// <summary>
+        /// Устанавливает источник данных, из которых был взят курс
+        /// </summary>
+        internal void SetRateSource(RateSource source)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException("Источник данных курса не может быть пустым");
+            }
+            if (RateSource is null)
+            {
+                RateSource = source;
+            }
         }
     }
 }

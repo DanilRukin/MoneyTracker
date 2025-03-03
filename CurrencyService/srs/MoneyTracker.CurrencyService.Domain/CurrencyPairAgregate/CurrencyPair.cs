@@ -48,7 +48,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
             ?.OrderByDescending(rate => rate.RateDate)
             ?.FirstOrDefault();
 
-        public CurrencyPair() { }
+        internal CurrencyPair() { }
 
 
         /// <summary>
@@ -75,6 +75,61 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
             {
                 IsActive = false;
                 AddDomainEvent(new CurrencyPairArchivedDomainEvent(Id));
+            }
+        }
+
+        /// <summary>
+        /// Устанавливает целевую валюту
+        /// </summary>
+        internal void SetTargetCurrency(Currency currency)
+        {
+            if (BaseCurrency != null && BaseCurrency == currency)
+            {
+                throw new InvalidOperationException("Нельзя установить целевую валюту такую же, как базовую!");
+            }
+            if (TargetCurrency == null)
+            {
+                AddDomainEvent(new TargetCurrencyFirstInstalledDomainEvent(Id, currency.Id));
+            }
+            else
+            {
+                AddDomainEvent(new TargetCurrencyChangedDomainEvent(Id, TargetCurrency.Id, currency.Id));
+            }
+            TargetCurrency = currency;
+        }
+
+        /// <summary>
+        /// Устанавливает базовую валюту
+        /// </summary>
+        internal void SetBaseCurrency(Currency currency)
+        {
+
+            if (TargetCurrency != null && TargetCurrency == currency)
+            {
+                throw new InvalidOperationException("Нельзя установить базовую валюту такую же, как целевую!");
+            }
+            if (BaseCurrency == null)
+            {
+                AddDomainEvent(new BaseCurrencyFirstInstalledDomainEvent(Id, currency.Id));
+            }
+            else
+            {
+                AddDomainEvent(new BaseCurrencyChangedDomainEvent(Id, BaseCurrency.Id, currency.Id));
+            }
+            BaseCurrency = currency;
+        }
+
+        /// <summary>
+        /// Добавляет курс для этой валютной пары
+        /// </summary>
+        /// <param name="rate">курс валютной пары</param>
+        public void AddRate(ExchangeRate rate)
+        {
+            _exchangeRates ??= [];
+            if (!_exchangeRates.Contains(rate))
+            {
+                _exchangeRates.Add(rate);
+                rate.SetCurrencyPair(this);
             }
         }
     }

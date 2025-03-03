@@ -91,5 +91,36 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
                 _currencyPairs.ForEach(pair => pair.Archive());
             }
         }
+
+        /// <summary>
+        /// Добавляет валютную пару
+        /// </summary>
+        /// <param name="currencyPair"></param>
+        internal void AddCurrencyPair(CurrencyPair currencyPair)
+        {
+            _currencyPairs ??= [];
+
+            if (!_currencyPairs.Contains(currencyPair))
+            {
+                _currencyPairs.Add(currencyPair);
+            }
+        }
+
+        /// <summary>
+        /// Обновляет валютную пару
+        /// </summary>
+        /// <param name="currencyPair"></param>
+        internal void UpdateCurrencyPair(CurrencyPair currencyPair)
+        {
+            DeleteCurrencyPair(currencyPair);
+            AddCurrencyPair(currencyPair);
+        }
+
+        /// <summary>
+        /// Удаляет валютную пару
+        /// </summary>
+        /// <param name="currencyPair"></param>
+        internal void DeleteCurrencyPair(CurrencyPair currencyPair) =>
+            _currencyPairs?.Remove(currencyPair);
     }
 }
