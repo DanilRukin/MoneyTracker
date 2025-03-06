@@ -13,7 +13,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
         [Fact]
         public void WhenArchivedMustArchiveAllCurrencyPairs()
         {
-            var pairService = new CurrencyPairService();
+            var pairService = new CurrencyPairService(CurrencyPairFactory);
             var dollar = CurrencyFactory.Create("dol", "usa dollar", '$', true);
             var rub = CurrencyFactory.Create("rub", "russian ruble", 'Р', true);
             var euro = CurrencyFactory.Create("euro", "euro", 'e', true);
@@ -33,6 +33,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             euroRuble.IsActive.Should().BeFalse();
 
             dollarEuro.IsActive.Should().BeTrue();
+            euroDollar.IsActive.Should().BeTrue();
         }
     }
 }

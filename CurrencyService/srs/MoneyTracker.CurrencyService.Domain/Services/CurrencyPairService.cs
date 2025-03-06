@@ -13,18 +13,27 @@ namespace MoneyTracker.CurrencyService.Domain.Services
     /// </summary>
     public class CurrencyPairService
     {
+        private readonly ICurrencyPairFactory _currencyPairFactory;
+
+        public CurrencyPairService(ICurrencyPairFactory currencyPairFactory)
+        {
+            _currencyPairFactory = currencyPairFactory ?? throw new ArgumentNullException(nameof(currencyPairFactory));
+        }
+
+
+
         /// <summary>
         /// Создает валютную пару
         /// </summary>
         /// <param name="baseCurrency">Базовая валюта</param>
         /// <param name="targetCurrency">Целевая валюта</param>
-        /// <returns></returns>
         public CurrencyPair CreatePair(Currency baseCurrency, Currency targetCurrency)
         {
-            CurrencyPair currencyPair = new CurrencyPair();
-            currencyPair.SetBaseCurrency(baseCurrency);
+            CurrencyPairBuilder builder = new CurrencyPairBuilder();
+            builder.WithBaseCurrency(baseCurrency)
+                .WithTargetCurrency(targetCurrency);
+            CurrencyPair currencyPair = _currencyPairFactory.CreatePair(builder);
             baseCurrency.AddCurrencyPair(currencyPair);
-            currencyPair.SetTargetCurrency(targetCurrency);
             targetCurrency.AddCurrencyPair(currencyPair);
             currencyPair.Activate();
             return currencyPair;

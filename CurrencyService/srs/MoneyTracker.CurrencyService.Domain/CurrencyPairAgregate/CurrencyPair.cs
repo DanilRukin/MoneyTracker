@@ -3,11 +3,6 @@ using MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate.Events;
 using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity;
 using SharedKernel;
 using SharedKernel.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
 {
@@ -48,7 +43,14 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
             ?.OrderByDescending(rate => rate.RateDate)
             ?.FirstOrDefault();
 
-        internal CurrencyPair() { }
+        internal CurrencyPair(CurrencyPairBuilder builder)
+        {
+            ValidateBaseCurrency(builder.BaseCurrency);
+            BaseCurrency = builder.BaseCurrency;
+            ValidateTargetCurrency(builder.TargetCurrency);
+            TargetCurrency = builder.TargetCurrency;
+            IsActive = true;
+        }
 
 
         /// <summary>
@@ -79,47 +81,6 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
         }
 
         /// <summary>
-        /// Устанавливает целевую валюту
-        /// </summary>
-        internal void SetTargetCurrency(Currency currency)
-        {
-            if (BaseCurrency != null && BaseCurrency == currency)
-            {
-                throw new InvalidOperationException("Нельзя установить целевую валюту такую же, как базовую!");
-            }
-            if (TargetCurrency == null)
-            {
-                AddDomainEvent(new TargetCurrencyFirstInstalledDomainEvent(Id, currency.Id));
-            }
-            else
-            {
-                AddDomainEvent(new TargetCurrencyChangedDomainEvent(Id, TargetCurrency.Id, currency.Id));
-            }
-            TargetCurrency = currency;
-        }
-
-        /// <summary>
-        /// Устанавливает базовую валюту
-        /// </summary>
-        internal void SetBaseCurrency(Currency currency)
-        {
-
-            if (TargetCurrency != null && TargetCurrency == currency)
-            {
-                throw new InvalidOperationException("Нельзя установить базовую валюту такую же, как целевую!");
-            }
-            if (BaseCurrency == null)
-            {
-                AddDomainEvent(new BaseCurrencyFirstInstalledDomainEvent(Id, currency.Id));
-            }
-            else
-            {
-                AddDomainEvent(new BaseCurrencyChangedDomainEvent(Id, BaseCurrency.Id, currency.Id));
-            }
-            BaseCurrency = currency;
-        }
-
-        /// <summary>
         /// Добавляет курс для этой валютной пары
         /// </summary>
         /// <param name="rate">курс валютной пары</param>
@@ -132,5 +93,37 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
                 rate.SetCurrencyPair(this);
             }
         }
+
+        private void ValidateBaseCurrency(Currency currency)
+        {
+            ValidateCurrencyCommonProperties(currency);
+            if (TargetCurrency != null && TargetCurrency == currency)
+            {
+                throw new InvalidOperationException("Нельзя установить базовую валюту такую же, как целевую!");
+            }
+        }
+
+        private void ValidateTargetCurrency(Currency currency)
+        {
+            ValidateCurrencyCommonProperties(currency);
+            if (BaseCurrency != null && BaseCurrency == currency)
+            {
+                throw new InvalidOperationException("Нельзя установить целевую валюту такую же, как базовую!");
+            }
+        }
+
+        private void ValidateCurrencyCommonProperties(Currency currency)
+        {
+            if (currency == null)
+            {
+                throw new ArgumentNullException("Валюта в валютной паре не может быть null");
+            }
+            if (!currency.IsActive)
+            {
+                throw new InvalidOperationException($"Невозможно создать валютную пару для архивной валюты! " +
+                    $"('{currency.Name}')");
+            }
+        }
+
     }
 }

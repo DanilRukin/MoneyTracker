@@ -14,7 +14,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
         public void RateCanNotBeNegativeWhenCreating()
         {
             var source = RateSourceFactory.CreateRateSource("1");
-            var pairService = new CurrencyPairService();
+            var pairService = new CurrencyPairService(CurrencyPairFactory);
             var dollar = CurrencyFactory.Create("dol", "usa dollar", '$', true);
             var rub = CurrencyFactory.Create("rub", "russian ruble", 'Р', true);
             var pair = pairService.CreatePair(dollar, rub);
@@ -26,7 +26,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
         public void CouldNotChangeRateOnNegative()
         {
             var source = RateSourceFactory.CreateRateSource("1");
-            var pairService = new CurrencyPairService();
+            var pairService = new CurrencyPairService(CurrencyPairFactory);
             var dollar = CurrencyFactory.Create("dol", "usa dollar", '$', true);
             var rub = CurrencyFactory.Create("rub", "russian ruble", 'Р', true);
             var pair = pairService.CreatePair(dollar, rub);

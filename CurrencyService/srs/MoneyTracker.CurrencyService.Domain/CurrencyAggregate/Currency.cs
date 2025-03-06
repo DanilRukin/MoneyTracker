@@ -96,24 +96,26 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
         /// Добавляет валютную пару
         /// </summary>
         /// <param name="currencyPair"></param>
-        internal void AddCurrencyPair(CurrencyPair currencyPair)
+        public void AddCurrencyPair(CurrencyPair currencyPair)
         {
             _currencyPairs ??= [];
-
+            ValidateCurrencyPair(currencyPair);
             if (!_currencyPairs.Contains(currencyPair))
             {
                 _currencyPairs.Add(currencyPair);
             }
         }
 
-        /// <summary>
-        /// Обновляет валютную пару
-        /// </summary>
-        /// <param name="currencyPair"></param>
-        internal void UpdateCurrencyPair(CurrencyPair currencyPair)
+        private void ValidateCurrencyPair(CurrencyPair currencyPair)
         {
-            DeleteCurrencyPair(currencyPair);
-            AddCurrencyPair(currencyPair);
+            if (currencyPair is null)
+            {
+                throw new ArgumentNullException("Нельзя добавить несуществующую валютную пару");
+            }
+            if (currencyPair.BaseCurrency != this && currencyPair.TargetCurrency != this)
+            {
+                throw new InvalidOperationException($"Данная валютная пара не принадлежит этой валюте ('{Name}')");
+            }
         }
 
         /// <summary>

@@ -18,7 +18,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
         public void WhenAddExchangeRateThanItKnowsAboutSource()
         {
             var source = RateSourceFactory.CreateRateSource("1");
-            var pairService = new CurrencyPairService();
+            var pairService = new CurrencyPairService(CurrencyPairFactory);
             var dollar = CurrencyFactory.Create("dol", "usa dollar", '$', true);
             var rub = CurrencyFactory.Create("rub", "russian ruble", 'Р', true);
             var pair = pairService.CreatePair(dollar, rub);
@@ -27,13 +27,14 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
 
             exchangeRate.RateSource.Should().NotBeNull();
             source.ExchangeRates.Should().Contain(exchangeRate);
+            exchangeRate.RateSource.Should().Be(source);
         }
 
         [Fact]
         public void RemoveExchangeRateCorrectly()
         {
             var source = RateSourceFactory.CreateRateSource("1");
-            var pairService = new CurrencyPairService();
+            var pairService = new CurrencyPairService(CurrencyPairFactory);
             var dollar = CurrencyFactory.Create("dol", "usa dollar", '$', true);
             var rub = CurrencyFactory.Create("rub", "russian ruble", 'Р', true);
             var pair = pairService.CreatePair(dollar, rub);
