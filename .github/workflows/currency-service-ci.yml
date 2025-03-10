@@ -1,0 +1,48 @@
+name: CurrencyService CI
+
+on:
+    push:
+      branches:
+          - Main
+          - Dev
+      path:
+        - 'CurrencyService/**'
+        - 'SharedKernel/**'
+    pull_request:
+      branches:
+          - Main
+          - Dev
+      path:
+        - 'CurrencyService/**'
+        - 'SharedKernel/**'
+jobs:
+    build_and_test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v3
+              with:
+                dotnet-version: '8.0.x'
+
+          # Настройка источника пакетов GitHub
+            - name: Add GitHub Packages source
+              run: |
+                dotnet nuget add source \
+                  --name "GitHubPackages" \
+                  --username DanilRukin \
+                  --password ${{ secrets.PACKAGES_TOKEN }} \
+                  --store-password-in-clear-text \
+                  https://nuget.pkg.github.com/${{ github.DanilRukin }}/index.json
+
+            - name: Restore dependencies
+              run: dotnet restore
+
+            - name: Build project
+              run: dotnet build --no-restore
+
+            - name: Run tests
+              run: dotnet test --no-build --verbosity-normal

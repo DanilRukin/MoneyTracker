@@ -1,0 +1,37 @@
+name: SharedKernel CI
+
+on:
+  push:
+    branches:
+      - Main
+      - Dev
+    paths:
+      - 'SharedKernel/**'
+  pull_request:
+    branches:
+      - Main
+      - Dev
+    paths:
+      - 'SharedKernel/**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore SharedKernel/SharedKernel.sln
+
+      - name: Build project
+        run: dotnet build SharedKernel/SharedKernel.sln --no-restore
+
+      - name: Run tests
+        run: dotnet test SharedKernel/SharedKernel.sln --no-build --verbosity normal
