@@ -39,10 +39,13 @@ jobs:
                   https://nuget.pkg.github.com/${{ github.DanilRukin }}/index.json
 
             - name: Restore dependencies
+              working-directory: ./CurrencyService
               run: dotnet restore
 
             - name: Build project
+              working-directory: ./CurrencyService
               run: dotnet build --no-restore
 
             - name: Run tests
+              working-directory: ./CurrencyService
               run: dotnet test --no-build --verbosity-normal
