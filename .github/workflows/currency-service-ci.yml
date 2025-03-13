@@ -28,24 +28,15 @@ jobs:
               with:
                 dotnet-version: '8.0.x'
 
-          # Настройка источника пакетов GitHub
-            - name: Add GitHub Packages source
+            - name: Configure NuGet
               run: |
-                dotnet nuget add source \
-                  --name "GitHubPackages" \
-                  --username DanilRukin \
-                  --password ${{ secrets.PACKAGES_TOKEN }} \
-                  --store-password-in-clear-text \
-                  https://nuget.pkg.github.com/${{ github.DanilRukin }}/index.json
+                sed -i 's/%GITHUB_TOKEN%/${{ secrets.PACKAGES_TOKEN }}/g' CurrencyService/nuget.config
 
             - name: Restore dependencies
-              working-directory: ./CurrencyService
-              run: dotnet restore
+              run: dotnet restore CurrencyService/CurrencyService.sln
 
             - name: Build project
-              working-directory: ./CurrencyService
-              run: dotnet build --no-restore
+              run: dotnet build CurrencyService/CurrencyService.sln --no-restore
 
             - name: Run tests
-              working-directory: ./CurrencyService
-              run: dotnet test --no-build --verbosity-normal
+              run: dotnet test CurrencyService/CurrencyService.sln --no-build --verbosity-normal

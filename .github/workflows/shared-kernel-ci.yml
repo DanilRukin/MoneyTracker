@@ -35,3 +35,10 @@ jobs:
 
       - name: Run tests
         run: dotnet test SharedKernel/SharedKernel.sln --no-build --verbosity normal
+
+      - name: Publish package
+        run: |
+          dotnet pack SharedKernel/SharedKernel.sln --configuration Release --output ./artifacts
+          dotnet nuget push ./artifacts/*.nupkg \
+           --source "https://nuget.pkg.github.com/DanilRukin/index.json" \
+           --api-key ${{ secrets.PACKAGES_TOKEN }}
