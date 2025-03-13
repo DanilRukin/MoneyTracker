@@ -33,10 +33,10 @@ jobs:
                 sed -i 's/%GITHUB_TOKEN%/${{ secrets.PACKAGES_TOKEN }}/g' CurrencyService/nuget.config
 
             - name: Restore dependencies
-              run: dotnet restore ./CurrencyService/CurrencyService.sln
+              run: dotnet restore CurrencyService/srs/MoneyTracker.CurrencyService.Domain/MoneyTracker.CurrencyService.Domain.csproj
 
             - name: Build project
-              run: dotnet build ./CurrencyService/CurrencyService.sln --no-restore
+              run: dotnet build CurrencyService/srs/MoneyTracker.CurrencyService.Domain/MoneyTracker.CurrencyService.Domain.csproj --no-restore
 
             - name: Run tests
-              run: dotnet test ./CurrencyService/CurrencyService.sln --no-build --verbosity-normal
+              run: dotnet test CurrencyService/srs/MoneyTracker.CurrencyService.Domain/MoneyTracker.CurrencyService.Domain.csproj --no-build --verbosity-normal
