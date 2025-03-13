@@ -28,17 +28,17 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore SharedKernel/SharedKernel.sln
+        run: dotnet restore ./SharedKernel/SharedKernel.sln
 
       - name: Build project
-        run: dotnet build SharedKernel/SharedKernel.sln --no-restore
+        run: dotnet build ./SharedKernel/SharedKernel.sln --no-restore
 
       - name: Run tests
-        run: dotnet test SharedKernel/SharedKernel.sln --no-build --verbosity normal
+        run: dotnet test ./SharedKernel/SharedKernel.sln --no-build --verbosity normal
 
       - name: Publish package
         run: |
-          dotnet pack SharedKernel/SharedKernel.sln --configuration Release --output ./artifacts
+          dotnet pack ./SharedKernel/SharedKernel.sln --configuration Release --output ./artifacts
           dotnet nuget push ./artifacts/*.nupkg \
            --source "https://nuget.pkg.github.com/DanilRukin/index.json" \
            --api-key ${{ secrets.PACKAGES_TOKEN }}
