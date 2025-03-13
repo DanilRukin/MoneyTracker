@@ -39,4 +39,4 @@ jobs:
               run: dotnet build CurrencyService/srs/MoneyTracker.CurrencyService.Domain/MoneyTracker.CurrencyService.Domain.csproj --no-restore
 
             - name: Run tests
-              run: dotnet test CurrencyService/srs/MoneyTracker.CurrencyService.Domain/MoneyTracker.CurrencyService.Domain.csproj --no-build --verbosity normal
+              run: dotnet test CurrencyService/tests/MoneyTracker.CurrencyService.UnitTests/MoneyTracker.CurrencyService.UnitTests.csproj
