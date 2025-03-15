@@ -36,38 +36,7 @@ jobs:
         run: |
           sed -i 's/%GITHUB_TOKEN%/${{ secrets.PACKAGES_TOKEN }}/g' CurrencyService/nuget.config
 
-      # Шаг 4: Кэширование SonarQube Cloud packages
-      - name: Cache SonarQube Cloud packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-
-      # Шаг 5: Кэширование SonarQube Cloud scanner
-      - name: Cache SonarQube Cloud scanner
-        id: cache-sonar-scanner
-        uses: actions/cache@v4
-        with:
-          path: ./.sonar/scanner
-          key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
-
-      # Шаг 6: Установка SonarQube Cloud scanner (если не закэшировано)
-      - name: Install SonarQube Cloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p ./.sonar/scanner
-          dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
-
-      # Шаг 7: Запуск анализа SonarQube
-      - name: Build and analyze
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          ./.sonar/scanner/dotnet-sonarscanner begin /k:"DanilRukin_MoneyTracker" /o:"dvrukin" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build
-          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+      
 
       # Шаг 8: Восстановление зависимостей
       - name: Restore dependencies
@@ -80,3 +49,19 @@ jobs:
       # Шаг 10: Запуск тестов
       - name: Run tests
         run: dotnet test CurrencyService/tests/MoneyTracker.CurrencyService.UnitTests/MoneyTracker.CurrencyService.UnitTests.csproj
+
+  sonar_scan:
+    name: SonarQubeScan1
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: CurrencyService/
+
+
