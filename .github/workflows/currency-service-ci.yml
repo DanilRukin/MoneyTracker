@@ -32,33 +32,10 @@ jobs:
               run: |
                 sed -i 's/%GITHUB_TOKEN%/${{ secrets.PACKAGES_TOKEN }}/g' CurrencyService/nuget.config
 
-            - name: Cache SonarQube Cloud packages
-              uses: actions/cache@v4
-              with:
-                path: ~\sonar\cache
-                key: ${{ runner.os }}-sonar
-                restore-keys: ${{ runner.os }}-sonar
-            - name: Cache SonarQube Cloud scanner
-              id: cache-sonar-scanner
-              uses: actions/cache@v4
-              with:
-                path: .\.sonar\scanner
-                key: ${{ runner.os }}-sonar-scanner
-                restore-keys: ${{ runner.os }}-sonar-scanner
-            - name: Install SonarQube Cloud scanner
-              if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-              shell: powershell
-              run: |
-                New-Item -Path .\.sonar\scanner -ItemType Directory
-                dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-            - name: Build and analyze
+            - name: SonarQube Scan
+              uses: SonarSource/sonarqube-scan-action@v4
               env:
                 SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-              shell: powershell
-              run: |
-                .\.sonar\scanner\dotnet-sonarscanner begin /k:"DanilRukin_MoneyTracker" /o:"dvrukin" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-                dotnet build
-                .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
             - name: Restore dependencies
               run: dotnet restore CurrencyService/srs/MoneyTracker.CurrencyService.Domain/MoneyTracker.CurrencyService.Domain.csproj
