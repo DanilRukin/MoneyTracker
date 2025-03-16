@@ -19,6 +19,8 @@ on:
 jobs:
   build:
     uses: ./.github/workflows/currency-service-ci-build.yml
+    with: 
+      PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
 
   test:
     needs: build
@@ -27,3 +29,5 @@ jobs:
   sonar:
     needs: test
     uses: ./.github/workflows/currency-service-ci-sonar.yml
+    with:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
