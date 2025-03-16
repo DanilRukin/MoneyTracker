@@ -4,8 +4,7 @@ on:
   workflow_call:
     secrets:
       PACKAGES_TOKEN:
-        requires: true
-        type: string
+        required: true
 
 jobs:
   build:
