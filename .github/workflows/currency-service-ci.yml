@@ -66,18 +66,18 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           ./.sonar/scanner/dotnet-sonarscanner begin /k:"DanilRukin_MoneyTracker" /o:"dvrukin" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build CurrencyService/srs/MoneyTracker.CurrencyService.Domain/MoneyTracker.CurrencyService.Domain.csproj
+          dotnet build CurrencyService/MoneyTracker.CurrencyService.sln
           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
       # Шаг 8: Восстановление зависимостей
       - name: Restore dependencies
-        run: dotnet restore CurrencyService/srs/MoneyTracker.CurrencyService.Domain/MoneyTracker.CurrencyService.Domain.csproj
+        run: dotnet restore CurrencyService/MoneyTracker.CurrencyService.sln
 
       # Шаг 9: Сборка проекта
       - name: Build project
-        run: dotnet build CurrencyService/srs/MoneyTracker.CurrencyService.Domain/MoneyTracker.CurrencyService.Domain.csproj --no-restore
+        run: dotnet build CurrencyService/MoneyTracker.CurrencyService.sln --no-restore
 
       # Шаг 10: Запуск тестов
       - name: Run tests
-        run: dotnet test CurrencyService/tests/MoneyTracker.CurrencyService.UnitTests/MoneyTracker.CurrencyService.UnitTests.csproj
+        run: dotnet test CurrencyService/MoneyTracker.CurrencyService.sln
 
