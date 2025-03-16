@@ -18,12 +18,12 @@ on:
 
 jobs:
   build:
-    uses: ./.github/workflows/currency-service-build-ci.yml
+    uses: ./.github/workflows/currency-service-ci-build.yml
 
   test:
     needs: build
-    uses: ./.github/workflows/currency-service-test-ci.yml
+    uses: ./.github/workflows/currency-service-ci-test.yml
     
   sonar:
     needs: test
-    uses: ./.github/workflows/currency-service-sonar-ci.yml
+    uses: ./.github/workflows/currency-service-ci-sonar.yml
