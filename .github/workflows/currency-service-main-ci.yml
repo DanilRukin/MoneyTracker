@@ -1,0 +1,29 @@
+name: CurrencyService CI
+
+on:
+  push:
+    branches:
+      - Main
+      - Dev
+    paths:
+      - 'CurrencyService/**'
+      - 'SharedKernel/**'
+  pull_request:
+    branches:
+      - Main
+      - Dev
+    paths:
+      - 'CurrencyService/**'
+      - 'SharedKernel/**'
+
+jobs:
+  build:
+    uses: ./.github/workflows/currency-service-build-ci.yml
+
+  test:
+    needs: build
+    uses: ./.github/workflows/currency-service-test-ci.yml
+    
+  sonar:
+    needs: test
+    uses: ./.github/workflows/currency-service-sonar-ci.yml
