@@ -17,17 +17,10 @@ on:
       - 'SharedKernel/**'
 
 jobs:
-  secrets:
-    uses: ./.github/workflows/currency-service-ci-secrets.yml
-    secrets:
-      PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    
   build:
-    needs: secrets
     uses: ./.github/workflows/currency-service-ci-build.yml
-    with: 
-      PACKAGES_TOKEN: ${{ needs.secrets.outputs.PACKAGES_TOKEN }}
+    secrets:
+      PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}  # Передача секрета напрямую
 
   test:
     needs: build
@@ -36,5 +29,5 @@ jobs:
   sonar:
     needs: test
     uses: ./.github/workflows/currency-service-ci-sonar.yml
-    with:
-      SONAR_TOKEN: ${{ needs.secrets.outputs.SONAR_TOKEN }}
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Передача секрета напрямую

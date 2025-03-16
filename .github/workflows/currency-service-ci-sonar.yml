@@ -2,7 +2,7 @@ name: CurrencyServiceSonarQube
 
 on:
   workflow_call:
-    inputs:
+    secrets:
       SONAR_TOKEN:
         requires: true
         type: string
@@ -39,8 +39,8 @@ jobs:
       # Запуск анализа SonarQube
       - name: Build and analyze
         env:
-          SONAR_TOKEN: ${{ inputs.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./.sonar/scanner/dotnet-sonarscanner begin /k:"DanilRukin_MoneyTracker" /o:"dvrukin" /d:sonar.token="${{ inputs.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"DanilRukin_MoneyTracker" /o:"dvrukin" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build CurrencyService/MoneyTracker.CurrencyService.sln
-          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ inputs.SONAR_TOKEN }}"
+          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
