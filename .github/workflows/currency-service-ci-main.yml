@@ -58,6 +58,7 @@ jobs:
         run: |
           ./.sonar/scanner/dotnet-sonarscanner begin /k:"DanilRukin_MoneyTracker" /o:"dvrukin" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build CurrencyService/MoneyTracker.CurrencyService.sln
+          dotnet test CurrencyService/MoneyTracker.CurrencyService.sln
           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
       # Шаг 8: Восстановление зависимостей
       - name: Restore dependencies
