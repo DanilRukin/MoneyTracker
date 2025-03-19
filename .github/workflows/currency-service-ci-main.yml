@@ -70,13 +70,21 @@ jobs:
         run: |
           dotnet test CurrencyService/MoneyTracker.CurrencyService.sln --collect:"XPlat Code Coverage" --results-directory ./TestResults
 
-      # Шаг 10: Конвертация отчета в OpenCover
+      # Шаг 10: Проверка содержимого TestResults
+      - name: List TestResults directory
+        run: ls -R ./TestResults
+
+      # Шаг 11: Конвертация отчета в OpenCover
       - name: Convert coverage report to OpenCover
         run: |
           dotnet tool install --global dotnet-reportgenerator-globaltool
           reportgenerator -reports:./TestResults/**/coverage.cobertura.xml -targetdir:./CoverageReport -reporttypes:OpenCover
 
-      # Шаг 11: Запуск анализа SonarQube
+      # Шаг 12: Проверка содержимого CoverageReport
+      - name: List CoverageReport directory
+        run: ls -R ./CoverageReport
+
+      # Шаг 13: Запуск анализа SonarQube
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
