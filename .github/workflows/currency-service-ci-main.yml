@@ -79,7 +79,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./.sonar/scanner/dotnet-sonarscanner begin /k:"DanilRukin_MoneyTracker" /o:"dvrukin" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths="./TestResults/**/coverage.cobertura.xml"
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"DanilRukin_MoneyTracker" /o:"dvrukin" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.xunit.reportsPaths="./TestResults/**/coverage.cobertura.xml"
           dotnet build CurrencyService/MoneyTracker.CurrencyService.sln
           dotnet test CurrencyService/MoneyTracker.CurrencyService.sln --collect:"XPlat Code Coverage" --results-directory ./TestResults
           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
