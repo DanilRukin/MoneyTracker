@@ -21,15 +21,18 @@ jobs:
       # Шаг 1: Получить код из репозитория
       - name: Checkout code
         uses: actions/checkout@v3
+
       # Шаг 2: Установить .NET SDK
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
+
       # Шаг 3: Настроить NuGet для работы с GitHub Packages
       - name: Configure NuGet
         run: |
           sed -i 's/%GITHUB_TOKEN%/${{ secrets.PACKAGES_TOKEN }}/g' CurrencyService/nuget.config
+
       # Шаг 4: Кэширование SonarQube Cloud packages
       - name: Cache SonarQube Cloud packages
         uses: actions/cache@v4
@@ -37,6 +40,7 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+
       # Шаг 5: Кэширование SonarQube Cloud scanner
       - name: Cache SonarQube Cloud scanner
         id: cache-sonar-scanner
@@ -45,29 +49,39 @@ jobs:
           path: ./.sonar/scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
+
       # Шаг 6: Установка SonarQube Cloud scanner (если не закэшировано)
       - name: Install SonarQube Cloud scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         run: |
           mkdir -p ./.sonar/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
-      # Шаг 7: Запуск анализа SonarQube
+
+      # Шаг 7: Восстановление зависимостей
+      - name: Restore dependencies
+        run: dotnet restore CurrencyService/MoneyTracker.CurrencyService.sln
+
+      # Шаг 8: Сборка проекта
+      - name: Build project
+        run: dotnet build CurrencyService/MoneyTracker.CurrencyService.sln --no-restore
+
+      # Шаг 9: Запуск тестов с покрытием
+      - name: Run tests with coverage
+        run: |
+          dotnet test CurrencyService/MoneyTracker.CurrencyService.sln --collect:"XPlat Code Coverage" --results-directory ./TestResults
+
+      # Шаг 10: Конвертация отчета в OpenCover
+      - name: Convert coverage report to OpenCover
+        run: |
+          dotnet tool install --global dotnet-reportgenerator-globaltool
+          reportgenerator -reports:./TestResults/**/coverage.cobertura.xml -targetdir:./CoverageReport -reporttypes:OpenCover
+
+      # Шаг 11: Запуск анализа SonarQube
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./.sonar/scanner/dotnet-sonarscanner begin /k:"DanilRukin_MoneyTracker" /o:"dvrukin" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"DanilRukin_MoneyTracker" /o:"dvrukin" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="./CoverageReport/coverage.opencover.xml"
           dotnet build CurrencyService/MoneyTracker.CurrencyService.sln
-          dotnet test CurrencyService/MoneyTracker.CurrencyService.sln
+          dotnet test CurrencyService/MoneyTracker.CurrencyService.sln --collect:"XPlat Code Coverage" --results-directory ./TestResults
           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-      # Шаг 8: Восстановление зависимостей
-      - name: Restore dependencies
-        run: dotnet restore CurrencyService/MoneyTracker.CurrencyService.sln
-
-      # Шаг 9: Сборка проекта
-      - name: Build project
-        run: dotnet build CurrencyService/MoneyTracker.CurrencyService.sln --no-restore
-
-      # Шаг 10: Запуск тестов
-      - name: Run tests
-        run: dotnet test CurrencyService/MoneyTracker.CurrencyService.sln
