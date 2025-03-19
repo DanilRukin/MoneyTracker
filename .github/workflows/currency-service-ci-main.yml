@@ -74,21 +74,12 @@ jobs:
       - name: List TestResults directory
         run: ls -R ./TestResults
 
-      # Шаг 11: Конвертация отчета в OpenCover
-      - name: Convert coverage report to OpenCover
-        run: |
-          dotnet tool install --global dotnet-reportgenerator-globaltool
-          reportgenerator -reports:./TestResults/**/coverage.cobertura.xml -targetdir:./CoverageReport -reporttypes:OpenCover
-
-      # Шаг 12: Проверка содержимого CoverageReport
-      - name: List CoverageReport directory
-        run: ls -R ./CoverageReport
-
-      # Шаг 13: Запуск анализа SonarQube
+      # Шаг 11: Запуск анализа SonarQube
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          ./.sonar/scanner/dotnet-sonarscanner begin /k:"DanilRukin_MoneyTracker" /o:"dvrukin" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="./CoverageReport/coverage.opencover.xml"
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"DanilRukin_MoneyTracker" /o:"dvrukin" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vstest.coverage.reportsPaths="./TestResults/**/coverage.cobertura.xml"
           dotnet build CurrencyService/MoneyTracker.CurrencyService.sln
+          dotnet test CurrencyService/MoneyTracker.CurrencyService.sln --collect:"XPlat Code Coverage" --results-directory ./TestResults
           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
