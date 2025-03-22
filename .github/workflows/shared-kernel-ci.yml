@@ -1,0 +1,44 @@
+name: SharedKernel CI
+
+on:
+  push:
+    branches:
+      - Main
+      - Dev
+    paths:
+      - 'SharedKernel/**'
+  pull_request:
+    branches:
+      - Main
+      - Dev
+    paths:
+      - 'SharedKernel/**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore SharedKernel/src/SharedKernel/SharedKernel.csproj
+
+      - name: Build project
+        run: dotnet build SharedKernel/src/SharedKernel/SharedKernel.csproj --no-restore
+
+      - name: Run tests
+        run: dotnet test SharedKernel/tests/SharedKernel.UnitTests/SharedKernel.UnitTests.csproj
+
+      - name: Publish package
+        run: |
+          dotnet pack SharedKernel/src/SharedKernel/SharedKernel.csproj --configuration Release --output ./artifacts
+          dotnet nuget push ./artifacts/*.nupkg \
+           --source "https://nuget.pkg.github.com/DanilRukin/index.json" \
+           --api-key ${{ secrets.PACKAGES_TOKEN }}

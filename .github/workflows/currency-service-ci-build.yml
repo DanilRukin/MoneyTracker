@@ -1,0 +1,35 @@
+name: CurrencyServiceBuild
+
+on:
+  workflow_call:
+    secrets:
+      PACKAGES_TOKEN:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Получить код из репозитория
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Установить .NET SDK
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      # Настроить NuGet для работы с GitHub Packages
+      - name: Configure NuGet
+        run: |
+          sed -i 's/%GITHUB_TOKEN%/${{ secrets.PACKAGES_TOKEN }}/g' CurrencyService/nuget.config
+
+      # Восстановление зависимостей
+      - name: Restore dependencies
+        run: dotnet restore CurrencyService/MoneyTracker.CurrencyService.sln
+
+      # Сборка проекта
+      - name: Build project
+        run: dotnet build CurrencyService/MoneyTracker.CurrencyService.sln --no-restore
