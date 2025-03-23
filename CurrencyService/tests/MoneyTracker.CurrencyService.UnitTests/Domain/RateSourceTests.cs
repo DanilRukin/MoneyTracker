@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using FluentAssertions;
 using MoneyTracker.CurrencyService.Domain.RateSourceEntity;
+using MoneyTracker.CurrencyService.Domain.RateSourceEntity.Events;
 using MoneyTracker.CurrencyService.Domain.Services;
 
 namespace MoneyTracker.CurrencyService.UnitTests.Domain
@@ -66,6 +68,20 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             var action = () => source.ChangeName(name);
             action.Should().Throw<Exception>();
             source.Name.Should().Be(validName);
+        }
+
+        [Fact]
+        public void NameIsChangingAndDomainEventAddingWhenNameIsValid()
+        {
+            string validName = "valid name";
+            string anotherValidName = "another valid name";
+            var source = RateSourceFactory.CreateRateSource(validName);
+            source.ChangeName(anotherValidName);
+
+            source.Name.Should().Be(anotherValidName);
+            source.DomainEvents
+                .Should().NotBeNullOrEmpty()
+                .And.ContainItemsAssignableTo<RateSourceNameChangedDomainEvent>();
         }
     }
 }

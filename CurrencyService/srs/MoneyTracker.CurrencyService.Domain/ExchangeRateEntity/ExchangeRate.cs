@@ -1,5 +1,6 @@
 ﻿using MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate;
 using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity.Events;
+using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using MoneyTracker.CurrencyService.Domain.RateSourceEntity;
 using SharedKernel;
 
@@ -32,10 +33,11 @@ namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
 
         internal ExchangeRate(ExchangeRateBuilder builder)
         {
-            this.CurrencyPair = builder.Pair;
-            this.RateSource = builder.RateSource;
+            SetCurrencyPair(builder.Pair);
+            SetRateSource(builder.RateSource);
             Update(builder.Rate);
             RateDate = builder.Date;
+            CurrencyPair.AddRate(this);
         }
 
         /// <summary>
@@ -47,16 +49,15 @@ namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
         {
             if (CurrencyPair is null)
             {
-                throw new InvalidOperationException("Нельзя обновить курс для неустановленной валютной пары");
+                throw new InvalidOperationException(ExchangeRateErrorMessages.CanNotUpdateRateForNullableCUrrencyPair);
             }
             if (rate < 0m)
             {
-                throw new InvalidOperationException($"Курс не может быть меньше нуля. " +
-                    $"Предоставленный курс = {rate}");
+                throw new InvalidOperationException(ExchangeRateErrorMessages.RateCanNotBeNegative);
             }
             if (!CurrencyPair.IsActive)
             {
-                throw new InvalidOperationException("Курс валют можно обновить только для активной валютной пары");
+                throw new InvalidOperationException(ExchangeRateErrorMessages.RateCouldBeUpdatedOnlyForActiveCurrencyPair);
             }
             AddDomainEvent(new ExchangeRateUpdatedDomainEvent(Id, Rate, rate));
             Rate = rate;
@@ -67,6 +68,11 @@ namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
         /// </summary>
         internal void SetCurrencyPair(CurrencyPair currencyPair)
         {
+            ArgumentNullException.ThrowIfNull(currencyPair);
+            if (!currencyPair.IsActive)
+            {
+                throw new InvalidOperationException(ExchangeRateErrorMessages.CanNotSetRateForArchivedPair);
+            }
             if (CurrencyPair is null)
             {
                 CurrencyPair = currencyPair;
@@ -78,10 +84,7 @@ namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
         /// </summary>
         internal void SetRateSource(RateSource source)
         {
-            if (source is null)
-            {
-                throw new ArgumentNullException("Источник данных курса не может быть пустым");
-            }
+            ArgumentNullException.ThrowIfNull(source);
             if (RateSource is null)
             {
                 RateSource = source;

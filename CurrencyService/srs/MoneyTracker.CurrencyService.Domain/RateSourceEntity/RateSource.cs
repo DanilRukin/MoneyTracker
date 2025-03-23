@@ -1,4 +1,5 @@
 ﻿using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity;
+using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using MoneyTracker.CurrencyService.Domain.RateSourceEntity.Events;
 using SharedKernel;
 
@@ -50,15 +51,15 @@ namespace MoneyTracker.CurrencyService.Domain.RateSourceEntity
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException("Нельзя присвоить пустое имя источнику курса валют");
+                throw new ArgumentException(RateSourceErrorMessages.CanNotSetEmptySourceName);
             }
             if (name.StartsWith(' '))
             {
-                throw new ArgumentException("Имя не должно начинаться с символа пробела");
+                throw new ArgumentException(RateSourceErrorMessages.CanNotSetNameStartingWithSpaces);
             }
             if (name.EndsWith(' '))
             {
-                throw new ArgumentException("Имя не может заканчиваться символом пробела");
+                throw new ArgumentException(RateSourceErrorMessages.CanNotSetNameEndingWithSpaces);
             }
         }
 
@@ -67,7 +68,6 @@ namespace MoneyTracker.CurrencyService.Domain.RateSourceEntity
         /// </summary>
         public void AddRate(ExchangeRate rate)
         {
-            _exchangeRates ??= [];
             if (!_exchangeRates.Contains(rate))
             {
                 _exchangeRates.Add(rate);

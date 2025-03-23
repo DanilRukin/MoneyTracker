@@ -1,7 +1,9 @@
 ﻿using MoneyTracker.CurrencyService.Domain.CurrencyAggregate.Events;
 using MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate;
+using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using SharedKernel;
 using SharedKernel.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
 {
@@ -44,18 +46,19 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
         /// Список валютных пар, где данная валюта является основной
         /// </summary>
         public IReadOnlyCollection<CurrencyPair>? OnThesePairsIsBase => _currencyPairs
-            ?.Where(pair => pair.BaseCurrency?.Id == Id)
-            ?.ToList()
-            ?.AsReadOnly();
+            .Where(pair => pair.BaseCurrency?.Id == Id)
+            .ToList()
+            .AsReadOnly();
 
         /// <summary>
         /// Список валютных пар, где данная валюта является целевой
         /// </summary>
         public IReadOnlyCollection<CurrencyPair>? OnThesePairsIsTarget => _currencyPairs
-            ?.Where(pair => pair.TargetCurrency?.Id == Id)
-            ?.ToList()
-            ?.AsReadOnly();
+            .Where(pair => pair.TargetCurrency?.Id == Id)
+            .ToList()
+            .AsReadOnly();
 
+        [ExcludeFromCodeCoverage]
         protected Currency() { }
 
         public Currency(string code, string name, char symbol, bool isActive)
@@ -75,7 +78,6 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
             {
                 IsActive = true;
                 AddDomainEvent(new CurrencyActivatedDomainEvent(Id));
-                _currencyPairs.ForEach(pair => pair.Activate());
             }
         }
 
@@ -98,7 +100,6 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
         /// <param name="currencyPair"></param>
         public void AddCurrencyPair(CurrencyPair currencyPair)
         {
-            _currencyPairs ??= [];
             ValidateCurrencyPair(currencyPair);
             if (!_currencyPairs.Contains(currencyPair))
             {
@@ -106,15 +107,15 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
             }
         }
 
+        /// <summary>
+        /// Выполняет проверку состояния валютной пары
+        /// </summary>
         private void ValidateCurrencyPair(CurrencyPair currencyPair)
         {
-            if (currencyPair is null)
-            {
-                throw new ArgumentNullException("Нельзя добавить несуществующую валютную пару");
-            }
+            ArgumentNullException.ThrowIfNull(currencyPair);
             if (currencyPair.BaseCurrency != this && currencyPair.TargetCurrency != this)
             {
-                throw new InvalidOperationException($"Данная валютная пара не принадлежит этой валюте ('{Name}')");
+                throw new InvalidOperationException(CurrencyErrorMessages.ThisCurrencyPairDoesNotBelongToCurrency);
             }
         }
 
@@ -122,7 +123,10 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
         /// Удаляет валютную пару
         /// </summary>
         /// <param name="currencyPair"></param>
-        internal void DeleteCurrencyPair(CurrencyPair currencyPair) =>
-            _currencyPairs?.Remove(currencyPair);
+        public void DeleteCurrencyPair(CurrencyPair currencyPair)
+        {
+            ValidateCurrencyPair(currencyPair);
+            _currencyPairs.Remove(currencyPair);
+        }
     }
 }

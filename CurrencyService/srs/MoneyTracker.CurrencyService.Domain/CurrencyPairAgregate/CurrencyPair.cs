@@ -1,6 +1,7 @@
 ﻿using MoneyTracker.CurrencyService.Domain.CurrencyAggregate;
 using MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate.Events;
 using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity;
+using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using SharedKernel;
 using SharedKernel.Interfaces;
 
@@ -40,8 +41,8 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
         /// Текущий курс валют для этой валютной пары (самый актуальный)
         /// </summary>
         public ExchangeRate? ActualRate => _exchangeRates
-            ?.OrderByDescending(rate => rate.RateDate)
-            ?.FirstOrDefault();
+            .OrderByDescending(rate => rate.RateDate)
+            .FirstOrDefault();
 
         internal CurrencyPair(CurrencyPairBuilder builder)
         {
@@ -56,22 +57,27 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
         /// <summary>
         /// Активирует валютнуюу пару. Вызывается только <see cref="Currency"/>
         /// </summary>
-        internal void Activate()
+        public void Activate()
         {
             if (!IsActive)
             {
-                if (BaseCurrency.IsActive && TargetCurrency.IsActive)
+                if (!BaseCurrency.IsActive)
                 {
-                    IsActive = true;
-                    AddDomainEvent(new CurrencyPairActivatedDomainEvent(Id));
+                    throw new InvalidOperationException(CurrencyPairErrorMessages.CanNotActivatePairWhenBaseCurrencyIsArchived);
                 }
+                if (!TargetCurrency.IsActive)
+                {
+                    throw new InvalidOperationException(CurrencyPairErrorMessages.CanNotActivatePairWhenTargetCurrencyIsArchived);
+                }
+                IsActive = true;
+                AddDomainEvent(new CurrencyPairActivatedDomainEvent(Id));
             }
         }
 
         /// <summary>
         /// Архивирует валютную пару. Вызывается только <see cref="Currency"/>
         /// </summary>
-        internal void Archive()
+        public void Archive()
         {
             if (IsActive)
             {
@@ -86,7 +92,11 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
         /// <param name="rate">курс валютной пары</param>
         public void AddRate(ExchangeRate rate)
         {
-            _exchangeRates ??= [];
+            ArgumentNullException.ThrowIfNull(rate);
+            if (rate.CurrencyPair != this)
+            {
+                throw new InvalidOperationException(CurrencyPairErrorMessages.CanNotAddRateForAnotherPair);
+            }
             if (!_exchangeRates.Contains(rate))
             {
                 _exchangeRates.Add(rate);
@@ -94,34 +104,39 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
             }
         }
 
+        /// <summary>
+        /// Проверяет валидность состояния валюты, претендующей стать базовой
+        /// </summary>
         private void ValidateBaseCurrency(Currency currency)
         {
             ValidateCurrencyCommonProperties(currency);
             if (TargetCurrency != null && TargetCurrency == currency)
             {
-                throw new InvalidOperationException("Нельзя установить базовую валюту такую же, как целевую!");
+                throw new InvalidOperationException(CurrencyPairErrorMessages.CanNotSetBaseCurrenceSameAsTarget);
             }
         }
 
+        /// <summary>
+        /// Проверяет валидность состояния валюты, претендующей стать целевой
+        /// </summary>
         private void ValidateTargetCurrency(Currency currency)
         {
             ValidateCurrencyCommonProperties(currency);
             if (BaseCurrency != null && BaseCurrency == currency)
             {
-                throw new InvalidOperationException("Нельзя установить целевую валюту такую же, как базовую!");
+                throw new InvalidOperationException(CurrencyPairErrorMessages.CanNotSetTargetCurrencySameAsBase);
             }
         }
 
+        /// <summary>
+        /// Проверяет общие свойства входящей валюты
+        /// </summary>
         private void ValidateCurrencyCommonProperties(Currency currency)
         {
-            if (currency == null)
-            {
-                throw new ArgumentNullException("Валюта в валютной паре не может быть null");
-            }
+            ArgumentNullException.ThrowIfNull(currency);
             if (!currency.IsActive)
             {
-                throw new InvalidOperationException($"Невозможно создать валютную пару для архивной валюты! " +
-                    $"('{currency.Name}')");
+                throw new InvalidOperationException(CurrencyPairErrorMessages.CanNotCreatePairForArchivedCurrency);
             }
         }
 
