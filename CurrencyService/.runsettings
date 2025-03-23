@@ -5,7 +5,6 @@
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
           <Format>opencover</Format> <!-- Формат отчета -->
-          <Include>[CurrencyService*]*</Include> <!-- Включить только определенные сборки -->
           <ExcludeByAttribute>ExcludeFromCodeCoverage</ExcludeByAttribute> <!-- Исключить атрибуты -->
           <ExcludeByFile>**/Events/*.cs</ExcludeByFile> <!-- Исключить файлы событий-->
         </Configuration>
