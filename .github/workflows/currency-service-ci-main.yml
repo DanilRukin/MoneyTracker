@@ -75,7 +75,7 @@ jobs:
       # Шаг 10: Запуск тестов с покрытием
       - name: Run tests with coverage
         run: |
-          dotnet test CurrencyService/MoneyTracker.CurrencyService.sln --collect:"XPlat Code Coverage;Format=opencover" --settings:CurrencyService/runsettings /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="./TestResults/" --results-directory ./TestResults
+          dotnet test CurrencyService/MoneyTracker.CurrencyService.sln --collect:"XPlat Code Coverage" --settings:CurrencyService/.runsettings /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="./TestResults/" --results-directory ./TestResults
 
       # Шаг 11: Проверка содержимого TestResults
       - name: List TestResults directory
