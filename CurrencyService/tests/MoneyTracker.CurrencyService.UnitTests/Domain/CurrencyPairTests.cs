@@ -122,5 +122,96 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             rub.Activate();
             pair.IsActive.Should().BeFalse();
         }
+
+        [Fact]
+        public void RemoveExchangeRateCorrectly()
+        {
+            var source = RateSourceFactory.CreateRateSource("1");
+            var pairService = new CurrencyPairService(CurrencyPairFactory);
+            var dollar = CurrencyFactory.Create("dol", "usa dollar", '$', true);
+            var rub = CurrencyFactory.Create("rub", "russian ruble", 'Р', true);
+            var pair = pairService.CreatePair(dollar, rub);
+            var exchangeRate = ExchangeRateFactory.CreateRate(10, DateTime.Now, pair, source);
+
+            pair.ExchangeRates.Should().Contain(exchangeRate);
+            pair.RemoveRate(exchangeRate);
+
+            pair.ExchangeRates.Should().NotContain(exchangeRate);
+            exchangeRate.CurrencyPair.Should().BeNull();
+        }
+
+        [Fact]
+        public void WhenDroppingThanAllExchangeRatesAreDropping()
+        {
+            var source = RateSourceFactory.CreateRateSource("1");
+            var pairService = new CurrencyPairService(CurrencyPairFactory);
+            var dollar = CurrencyFactory.Create("dol", "usa dollar", '$', true);
+            var rub = CurrencyFactory.Create("rub", "russian ruble", 'Р', true);
+            var pair = pairService.CreatePair(dollar, rub);
+            var rates = new List<ExchangeRate>();
+            for (int i = 0; i < 10; i++)
+            {
+                rates.Add(ExchangeRateFactory.CreateRate(10, DateTime.Now, pair, source));
+            }
+
+            pair.Drop();
+            pair.ExchangeRates.Should().BeEmpty();
+            foreach (var rate in rates)
+            {
+                rate.CurrencyPair.Should().BeNull();
+            }
+        }
+
+        [Fact]
+        public void WhenDroppingThanCurrensiesAreNullAndAreNotContainsIt()
+        {
+            var source = RateSourceFactory.CreateRateSource("1");
+            var pairService = new CurrencyPairService(CurrencyPairFactory);
+            var dollar = CurrencyFactory.Create("dol", "usa dollar", '$', true);
+            var rub = CurrencyFactory.Create("rub", "russian ruble", 'Р', true);
+            var pair = pairService.CreatePair(dollar, rub);
+            var rates = new List<ExchangeRate>();
+            for (int i = 0; i < 10; i++)
+            {
+                rates.Add(ExchangeRateFactory.CreateRate(10, DateTime.Now, pair, source));
+            }
+            pair.Drop();
+
+            pair.TargetCurrency.Should().BeNull();
+            pair.BaseCurrency.Should().BeNull();
+            dollar.CurrencyPairs.Should().NotContain(pair);
+            rub.CurrencyPairs.Should().NotContain(pair);
+        }
+
+        [Fact]
+        public void NoOneBusinessOperationCouldBeProcessedWhenCurrencyIsInDroppedState()
+        {
+            var source = RateSourceFactory.CreateRateSource("1");
+            var pairService = new CurrencyPairService(CurrencyPairFactory);
+            var dollar = CurrencyFactory.Create("dol", "usa dollar", '$', true);
+            var rub = CurrencyFactory.Create("rub", "russian ruble", 'Р', true);
+            var pair = pairService.CreatePair(dollar, rub);
+            var rates = new List<ExchangeRate>();
+            for (int i = 0; i < 10; i++)
+            {
+                rates.Add(ExchangeRateFactory.CreateRate(10, DateTime.Now, pair, source));
+            }
+            pair.Drop();
+
+            Action[] actions = new Action[]
+            {
+                () => pair.Activate(),
+                () => pair.Archive(),
+                () => pair.AddRate(rates[0]),
+                () => pair.RemoveRate(rates[0]),
+            };
+
+            for (int i = 0; i < actions.Length; i++)
+            {
+                actions[i].Should()
+                    .Throw<InvalidOperationException>()
+                    .WithMessage(CommonErrorMessages.CouldNotApplyOperationForDroppedEntity);
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using MoneyTracker.CurrencyService.Domain.CurrencyAggregate;
+﻿using MoneyTracker.CurrencyService.Domain.Base;
+using MoneyTracker.CurrencyService.Domain.CurrencyAggregate;
 using MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate.Events;
 using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity;
 using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
@@ -10,7 +11,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
     /// <summary>
     /// Валютная пара
     /// </summary>
-    public class CurrencyPair : EntityBase<int>, IAgregateRoot
+    public class CurrencyPair : CurrencyServiceBaseEntity<int>, IAgregateRoot
     {
         /// <summary>
         /// Целевая валюта (та, в которую переводят)
@@ -59,6 +60,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
         /// </summary>
         public void Activate()
         {
+            ThrowIfDropped();
             if (!IsActive)
             {
                 if (!BaseCurrency.IsActive)
@@ -79,6 +81,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
         /// </summary>
         public void Archive()
         {
+            ThrowIfDropped();
             if (IsActive)
             {
                 IsActive = false;
@@ -92,6 +95,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
         /// <param name="rate">курс валютной пары</param>
         public void AddRate(ExchangeRate rate)
         {
+            ThrowIfDropped();
             ArgumentNullException.ThrowIfNull(rate);
             if (rate.CurrencyPair != this)
             {
@@ -140,5 +144,32 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
             }
         }
 
+        /// <summary>
+        /// Удаляет курс валют пары
+        /// </summary>
+        public void RemoveRate(ExchangeRate rate)
+        {
+            ThrowIfDropped();
+            if (_exchangeRates.Contains(rate))
+            {
+                _exchangeRates.Remove(rate);
+                rate.Drop();
+            }
+        }
+
+        protected override void Invalidate()
+        {
+            TargetCurrency.DeleteCurrencyPair(this);
+            BaseCurrency.DeleteCurrencyPair(this);
+            TargetCurrency = null;
+            BaseCurrency = null;
+            isDropped = false;
+            while (_exchangeRates.Any())
+            {
+                _exchangeRates.First().Drop();
+            }
+            _exchangeRates.Clear();
+            isDropped = true;
+        }
     }
 }

@@ -158,5 +158,80 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
                 .Throw<InvalidOperationException>()
                 .WithMessage(CurrencyErrorMessages.ThisCurrencyPairDoesNotBelongToCurrency);
         }
+
+        [Fact]
+        public void RemoveCurrencyPairCorrectly()
+        {
+            var pairService = new CurrencyPairService(CurrencyPairFactory);
+            var dollar = CurrencyFactory.Create("dol", "usa dollar", '$', true);
+            var rub = CurrencyFactory.Create("rub", "russian ruble", 'Р', true);
+
+            var dollarRuble = pairService.CreatePair(dollar, rub);
+            var rubleDollar = pairService.CreatePair(rub, dollar);
+            rub.DeleteCurrencyPair(dollarRuble);
+
+            rub.CurrencyPairs.Should().NotContain(dollarRuble);
+            dollarRuble.TargetCurrency.Should().BeNull();
+            dollarRuble.BaseCurrency.Should().BeNull();
+            dollar.CurrencyPairs.Should().NotContain(dollarRuble);
+
+            rubleDollar.BaseCurrency.Should().Be(rub);
+            rubleDollar.TargetCurrency.Should().Be(dollar);
+            rub.CurrencyPairs.Should().Contain(rubleDollar);
+            dollar.CurrencyPairs.Should().Contain(rubleDollar);
+        }
+
+        [Fact]
+        public void WhenDroppingCurrencyThanAllDependentCurrencyPairsDropping()
+        {
+            var pairService = new CurrencyPairService(CurrencyPairFactory);
+            var dollar = CurrencyFactory.Create("dol", "usa dollar", '$', true);
+            var rub = CurrencyFactory.Create("rub", "russian ruble", 'Р', true);
+            var euro = CurrencyFactory.Create("euro", "euro", 'e', true);
+
+            var dollarRuble = pairService.CreatePair(dollar, rub);
+            var rubleDollar = pairService.CreatePair(rub, dollar);
+            var euroDollar = pairService.CreatePair(euro, dollar);
+            rub.Drop();
+
+            rub.CurrencyPairs.Should().BeEmpty();
+            dollar.CurrencyPairs
+                .Should().NotContain(dollarRuble)
+                .And.NotContain(rubleDollar)
+                .And.Contain(euroDollar);
+            dollarRuble.TargetCurrency.Should().BeNull();
+            dollarRuble.BaseCurrency.Should().BeNull();
+            rubleDollar.BaseCurrency.Should().BeNull();
+            rubleDollar.TargetCurrency.Should().BeNull();
+            euroDollar.BaseCurrency.Should().Be(euro);
+            euroDollar.TargetCurrency.Should().Be(dollar);
+        }
+
+        [Fact]
+        public void NoOneBusinessOperationCouldBeProcessedWhenCurrencyIsInDroppedState()
+        {
+            var pairService = new CurrencyPairService(CurrencyPairFactory);
+            var dollar = CurrencyFactory.Create("dol", "usa dollar", '$', true);
+            var rub = CurrencyFactory.Create("rub", "russian ruble", 'Р', true);
+
+            var dollarRuble = pairService.CreatePair(dollar, rub);
+            var rubleDollar = pairService.CreatePair(rub, dollar);
+            rub.Drop();
+
+            var actions = new Action[]
+            {
+                () => rub.DeleteCurrencyPair(rubleDollar),
+                () => rub.Activate(),
+                () => rub.Archive(),
+                () => rub.AddCurrencyPair(rubleDollar),
+            };
+
+            foreach (var action in actions)
+            {
+                action.Should()
+                    .Throw<InvalidOperationException>()
+                    .WithMessage(CommonErrorMessages.CouldNotApplyOperationForDroppedEntity);
+            } 
+        }
     }
 }

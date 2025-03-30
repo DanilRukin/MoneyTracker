@@ -1,4 +1,5 @@
-﻿using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity;
+﻿using MoneyTracker.CurrencyService.Domain.Base;
+using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity;
 using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using MoneyTracker.CurrencyService.Domain.RateSourceEntity.Events;
 using SharedKernel;
@@ -8,7 +9,7 @@ namespace MoneyTracker.CurrencyService.Domain.RateSourceEntity
     /// <summary>
     /// Источник курса валют
     /// </summary>
-    public class RateSource : EntityBase<int>
+    public class RateSource : CurrencyServiceBaseEntity<int>
     {
         /// <summary>
         /// Наименование источника
@@ -37,6 +38,7 @@ namespace MoneyTracker.CurrencyService.Domain.RateSourceEntity
         /// <param name="name">Новое имя источника</param>
         public void ChangeName(string name)
         {
+            ThrowIfDropped();
             ThrowWhenNameIsInvalid(name);
             AddDomainEvent(new RateSourceNameChangedDomainEvent(Id, Name, name));
             Name = name;
@@ -68,6 +70,7 @@ namespace MoneyTracker.CurrencyService.Domain.RateSourceEntity
         /// </summary>
         public void AddRate(ExchangeRate rate)
         {
+            ThrowIfDropped();
             if (!_exchangeRates.Contains(rate))
             {
                 _exchangeRates.Add(rate);
@@ -81,7 +84,23 @@ namespace MoneyTracker.CurrencyService.Domain.RateSourceEntity
         /// <param name="rate"></param>
         public void RemoveRate(ExchangeRate rate)
         {
-            _exchangeRates.Remove(rate);
+            ThrowIfDropped();
+            if (_exchangeRates.Contains(rate))
+            {
+                _exchangeRates.Remove(rate);
+                rate.Drop();
+            }
+        }
+
+        protected override void Invalidate()
+        {
+            isDropped = false;
+            while (_exchangeRates.Any())
+            {
+                _exchangeRates.First().Drop();
+            }
+            _exchangeRates.Clear();
+            isDropped = true;
         }
     }
 }

@@ -1,15 +1,17 @@
-﻿using MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate;
+﻿using MoneyTracker.CurrencyService.Domain.Base;
+using MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate;
 using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity.Events;
 using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using MoneyTracker.CurrencyService.Domain.RateSourceEntity;
 using SharedKernel;
+using System.Diagnostics;
 
 namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
 {
     /// <summary>
     /// Курс валют
     /// </summary>
-    public class ExchangeRate : EntityBase<Guid>
+    public class ExchangeRate : CurrencyServiceBaseEntity<Guid>
     {
         /// <summary>
         /// Сам обменный курс
@@ -25,6 +27,11 @@ namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
         /// Валютная пара, для которой актуален курс
         /// </summary>
         public CurrencyPair CurrencyPair { get; protected set; }
+
+        /// <summary>
+        /// Указывает, является ли сущность удаленной
+        /// </summary>
+        private bool _isDropped = false; 
 
         /// <summary>
         /// Источник курса валют
@@ -47,6 +54,7 @@ namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
         /// <exception cref="InvalidOperationException"></exception>
         public void Update(decimal rate)
         {
+            ThrowIfDropped();
             if (CurrencyPair is null)
             {
                 throw new InvalidOperationException(ExchangeRateErrorMessages.CanNotUpdateRateForNullableCUrrencyPair);
@@ -89,6 +97,14 @@ namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
             {
                 RateSource = source;
             }
+        }
+
+        protected override void Invalidate()
+        {
+            RateSource.RemoveRate(this);
+            RateSource = null;
+            CurrencyPair.RemoveRate(this);
+            CurrencyPair = null;
         }
     }
 }
