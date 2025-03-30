@@ -95,11 +95,10 @@ namespace MoneyTracker.CurrencyService.Domain.RateSourceEntity
         protected override void Invalidate()
         {
             isDropped = false;
-            while (_exchangeRates.Any())
+            while (_exchangeRates.Count > 0)
             {
-                _exchangeRates.First().Drop();
+                _exchangeRates[0].Drop();
             }
-            _exchangeRates.Clear();
             isDropped = true;
         }
     }

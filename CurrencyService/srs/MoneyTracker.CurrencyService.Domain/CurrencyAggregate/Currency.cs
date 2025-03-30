@@ -141,11 +141,10 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
         protected override void Invalidate()
         {
             isDropped = false;
-            while (_currencyPairs.Any())
+            while (_currencyPairs.Count > 0)
             {
-                _currencyPairs.First().Drop();
+                _currencyPairs[0].Drop();
             }
-            _currencyPairs.Clear();
             isDropped = true;
         }
     }
