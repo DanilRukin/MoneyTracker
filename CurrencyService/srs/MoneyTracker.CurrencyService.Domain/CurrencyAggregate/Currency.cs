@@ -1,4 +1,5 @@
-﻿using MoneyTracker.CurrencyService.Domain.CurrencyAggregate.Events;
+﻿using MoneyTracker.CurrencyService.Domain.Base;
+using MoneyTracker.CurrencyService.Domain.CurrencyAggregate.Events;
 using MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate;
 using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using SharedKernel;
@@ -10,7 +11,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
     /// <summary>
     /// Сущность валюты
     /// </summary>
-    public class Currency : EntityBase<int>, IAgregateRoot
+    public class Currency : CurrencyServiceBaseEntity<int>, IAgregateRoot
     {
         /// <summary>
         /// Код валюты
@@ -74,6 +75,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
         /// </summary>
         public void Activate()
         {
+            ThrowIfDropped();
             if (!IsActive)
             {
                 IsActive = true;
@@ -86,6 +88,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
         /// </summary>
         public void Archive()
         {
+            ThrowIfDropped();
             if (IsActive)
             {
                 IsActive = false;
@@ -100,6 +103,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
         /// <param name="currencyPair"></param>
         public void AddCurrencyPair(CurrencyPair currencyPair)
         {
+            ThrowIfDropped();
             ValidateCurrencyPair(currencyPair);
             if (!_currencyPairs.Contains(currencyPair))
             {
@@ -125,8 +129,23 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
         /// <param name="currencyPair"></param>
         public void DeleteCurrencyPair(CurrencyPair currencyPair)
         {
+            ThrowIfDropped();
             ValidateCurrencyPair(currencyPair);
-            _currencyPairs.Remove(currencyPair);
+            if (_currencyPairs.Contains(currencyPair))
+            {
+                _currencyPairs.Remove(currencyPair);
+                currencyPair.Drop();
+            } 
+        }
+
+        protected override void Invalidate()
+        {
+            isDropped = false;
+            while (_currencyPairs.Count > 0)
+            {
+                _currencyPairs[0].Drop();
+            }
+            isDropped = true;
         }
     }
 }

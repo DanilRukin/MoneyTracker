@@ -119,5 +119,22 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             exchangeRate.CurrencyPair.Should().Be(pair);
             pair.ExchangeRates.Contains(exchangeRate);
         }
+
+        [Fact]
+        public void CanNotApplyUpdateOperationWhenIsInDroppedState()
+        {
+            var source = RateSourceFactory.CreateRateSource("1");
+            var pairService = new CurrencyPairService(CurrencyPairFactory);
+            var dollar = CurrencyFactory.Create("dol", "usa dollar", '$', true);
+            var rub = CurrencyFactory.Create("rub", "russian ruble", 'Р', true);
+            var pair = pairService.CreatePair(dollar, rub);
+            var exchangeRate = ExchangeRateFactory.CreateRate(5, DateTime.Now, pair, source);
+
+            pair.RemoveRate(exchangeRate);
+            var action = () => exchangeRate.Update(10);
+            action
+                .Should().Throw<InvalidOperationException>()
+                .WithMessage(CommonErrorMessages.CouldNotApplyOperationForDroppedEntity);
+        }
     }
 }
