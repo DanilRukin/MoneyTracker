@@ -3,6 +3,9 @@ using SharedKernel.Interfaces;
 
 namespace SharedKernel
 {
+    /// <summary>
+    /// <inheritdoc cref="IDomainEventDispatcher"/>
+    /// </summary>
     public class DomainEventDispatcher : IDomainEventDispatcher
     {
         private IMediator _mediator;
