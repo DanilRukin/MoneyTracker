@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<!-- Отключаем автоматическое включение .cs файлов -->
+		<!--<EnableDefaultCompileItems>false</EnableDefaultCompileItems>-->
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
+	</PropertyGroup>
+
+    <ItemGroup>
+		<AdditionalFiles Include="Definitions/errors.json">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</AdditionalFiles>
+		
+		<ProjectReference Include="..\MoneyTracker.SharedConstants.Generator\MoneyTracker.SharedConstants.Generator.csproj" PrivateAssets="all" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+	</ItemGroup>
+
+	<!-- Для отладки генератора -->
+	<ItemGroup>
+		<Compile Include="$(CompilerGeneratedFilesOutputPath)/**/*.cs" Visible="true" />
+	</ItemGroup>
+
+</Project>
