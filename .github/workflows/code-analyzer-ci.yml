@@ -33,9 +33,9 @@ jobs:
       - name: Build project
         run: dotnet build CodeAnalyzers/MoneyTracker.CodeAnalyzers/MoneyTracker.CodeAnalyzers.csproj --no-restore
 
-      - name: Publish package
-        run: |
-          dotnet pack CodeAnalyzers/MoneyTracker.CodeAnalyzers/MoneyTracker.CodeAnalyzers.csproj --configuration Release --output ./artifacts
-          dotnet nuget push ./artifacts/*.nupkg \
-           --source "https://nuget.pkg.github.com/DanilRukin/index.json" \
-           --api-key ${{ secrets.PACKAGES_TOKEN }}
+      # - name: Publish package
+      #   run: |
+      #     dotnet pack CodeAnalyzers/MoneyTracker.CodeAnalyzers/MoneyTracker.CodeAnalyzers.csproj --configuration Release --output ./artifacts
+      #     dotnet nuget push ./artifacts/*.nupkg \
+      #      --source "https://nuget.pkg.github.com/DanilRukin/index.json" \
+      #      --api-key ${{ secrets.PACKAGES_TOKEN }}

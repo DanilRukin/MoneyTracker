@@ -1,0 +1,14 @@
+{
+	"Errors": {
+		"Common": {
+			"CouldNotApplyOperationForDroppedEntity": {
+				"Code": "error.common.could_not_apply_operation_for_dropped_entity"
+			}
+		},
+		"Currency": {
+			"CanNotAddNullableCurrencyPair": {
+				"Code": "error.currency.can_not_add_nullable_currency_pair"
+			}
+		}
+	}
+}
