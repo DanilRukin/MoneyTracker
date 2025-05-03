@@ -1,0 +1,41 @@
+name: SharedKernel CI
+
+on:
+  push:
+    branches:
+      - Main
+      - Dev
+    paths:
+      - 'CodeAnalyzers/**'
+  pull_request:
+    branches:
+      - Main
+      - Dev
+    paths:
+      - 'CodeAnalyzers/**'
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore CodeAnalyzers/MoneyTracker.CodeAnalyzers/MoneyTracker.CodeAnalyzers.csproj
+
+      - name: Build project
+        run: dotnet build CodeAnalyzers/MoneyTracker.CodeAnalyzers/MoneyTracker.CodeAnalyzers.csproj --no-restore
+
+      - name: Publish package
+        run: |
+          dotnet pack CodeAnalyzers/MoneyTracker.CodeAnalyzers/MoneyTracker.CodeAnalyzers.csproj --configuration Release --output ./artifacts
+          dotnet nuget push ./artifacts/*.nupkg \
+           --source "https://nuget.pkg.github.com/DanilRukin/index.json" \
+           --api-key ${{ secrets.PACKAGES_TOKEN }}
