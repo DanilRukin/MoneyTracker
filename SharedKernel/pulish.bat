@@ -9,7 +9,7 @@ if "%GITHUB_TOKEN%"=="" (
 )
 
 :: Собираем пакет
-dotnet pack MoneyTracker.SharedConstants/MoneyTracker.SharedConstants.csproj --configuration Release --output ./artifacts
+dotnet pack src/SharedKernel/SharedKernel.csproj --configuration Release --output ./artifacts
 
 if %errorlevel% neq 0 (
     echo Error during packing of project
