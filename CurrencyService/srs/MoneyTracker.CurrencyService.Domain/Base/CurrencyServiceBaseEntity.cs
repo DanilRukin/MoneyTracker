@@ -1,4 +1,4 @@
-﻿using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
+﻿using MoneyTracker.SharedConstants.ErrorCodes;
 using SharedKernel;
 
 namespace MoneyTracker.CurrencyService.Domain.Base
@@ -35,7 +35,7 @@ namespace MoneyTracker.CurrencyService.Domain.Base
         {
             if (isDropped)
             {
-                throw new InvalidOperationException(CommonErrorMessages.CouldNotApplyOperationForDroppedEntity);
+                throw new InvalidOperationException(Errors.Common.CouldNotApplyOperationForDroppedEntity);
             }
         }
     }

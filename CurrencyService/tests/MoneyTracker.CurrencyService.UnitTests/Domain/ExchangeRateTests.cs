@@ -2,11 +2,7 @@
 using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity;
 using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using MoneyTracker.CurrencyService.Domain.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MoneyTracker.SharedConstants.ErrorCodes;
 
 namespace MoneyTracker.CurrencyService.UnitTests.Domain
 {
@@ -53,7 +49,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             var action = () => exchangeRate.Update(15);
             action
                 .Should().Throw<InvalidOperationException>()
-                .WithMessage(ExchangeRateErrorMessages.RateCouldBeUpdatedOnlyForActiveCurrencyPair);
+                .WithMessage(Errors.ExchangeRate.RateCouldBeUpdatedOnlyForActiveCurrencyPair);
         }
 
         [Fact]
@@ -104,7 +100,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             var action = () => ExchangeRateFactory.CreateRate(5, DateTime.Now, pair, source);
             action
                 .Should().Throw<InvalidOperationException>()
-                .WithMessage(ExchangeRateErrorMessages.CanNotSetRateForArchivedPair);
+                .WithMessage(Errors.ExchangeRate.CanNotSetRateForArchivedPair);
         }
 
         [Fact]
@@ -134,7 +130,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             var action = () => exchangeRate.Update(10);
             action
                 .Should().Throw<InvalidOperationException>()
-                .WithMessage(CommonErrorMessages.CouldNotApplyOperationForDroppedEntity);
+                .WithMessage(Errors.Common.CouldNotApplyOperationForDroppedEntity);
         }
     }
 }

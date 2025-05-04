@@ -2,6 +2,7 @@
 using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity;
 using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using MoneyTracker.CurrencyService.Domain.RateSourceEntity.Events;
+using MoneyTracker.SharedConstants.ErrorCodes;
 using SharedKernel;
 
 namespace MoneyTracker.CurrencyService.Domain.RateSourceEntity
@@ -53,15 +54,15 @@ namespace MoneyTracker.CurrencyService.Domain.RateSourceEntity
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException(RateSourceErrorMessages.CanNotSetEmptySourceName);
+                throw new ArgumentException(Errors.RateSource.CanNotSetEmptySourceName);
             }
             if (name.StartsWith(' '))
             {
-                throw new ArgumentException(RateSourceErrorMessages.CanNotSetNameStartingWithSpaces);
+                throw new ArgumentException(Errors.RateSource.CanNotSetNameStartingWithSpaces);
             }
             if (name.EndsWith(' '))
             {
-                throw new ArgumentException(RateSourceErrorMessages.CanNotSetNameEndingWithSpaces);
+                throw new ArgumentException(Errors.RateSource.CanNotSetNameEndingWithSpaces);
             }
         }
 

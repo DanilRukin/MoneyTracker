@@ -1,13 +1,7 @@
-﻿using MoneyTracker.CurrencyService.Domain.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentAssertions;
 using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity;
-using FluentAssertions;
-using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
-using MoneyTracker.CurrencyService.Domain.CurrencyAggregate;
+using MoneyTracker.CurrencyService.Domain.Services;
+using MoneyTracker.SharedConstants.ErrorCodes;
 
 namespace MoneyTracker.CurrencyService.UnitTests.Domain
 {
@@ -59,7 +53,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             var action = () => dollarEuro.AddRate(dollarRubleRate);
             action.Should()
                 .Throw<InvalidOperationException>()
-                .WithMessage(CurrencyPairErrorMessages.CanNotAddRateForAnotherPair);
+                .WithMessage(Errors.CurrencyPair.CanNotAddRateForAnotherPair);
         }
 
         [Fact]
@@ -92,7 +86,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             var baseIsArchived = () => pair.Activate();
             baseIsArchived.Should()
                 .Throw<InvalidOperationException>()
-                .WithMessage(CurrencyPairErrorMessages.CanNotActivatePairWhenBaseCurrencyIsArchived);
+                .WithMessage(Errors.CurrencyPair.CanNotActivatePairWhenBaseCurrencyIsArchived);
             dollar.Activate();
             pair.Activate();
             pair.IsActive.Should().BeTrue();
@@ -102,7 +96,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             var targetIsArchived = () => pair.Activate();
             targetIsArchived.Should()
                 .Throw<InvalidOperationException>()
-                .WithMessage(CurrencyPairErrorMessages.CanNotActivatePairWhenTargetCurrencyIsArchived);
+                .WithMessage(Errors.CurrencyPair.CanNotActivatePairWhenTargetCurrencyIsArchived);
             rub.Activate();
             pair.Activate();
             pair.IsActive.Should().BeTrue();
@@ -210,7 +204,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             {
                 actions[i].Should()
                     .Throw<InvalidOperationException>()
-                    .WithMessage(CommonErrorMessages.CouldNotApplyOperationForDroppedEntity);
+                    .WithMessage(Errors.Common.CouldNotApplyOperationForDroppedEntity);
             }
         }
     }

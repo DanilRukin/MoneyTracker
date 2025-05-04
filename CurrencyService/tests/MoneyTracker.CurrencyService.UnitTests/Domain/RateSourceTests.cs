@@ -10,6 +10,7 @@ using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using MoneyTracker.CurrencyService.Domain.RateSourceEntity;
 using MoneyTracker.CurrencyService.Domain.RateSourceEntity.Events;
 using MoneyTracker.CurrencyService.Domain.Services;
+using MoneyTracker.SharedConstants.ErrorCodes;
 
 namespace MoneyTracker.CurrencyService.UnitTests.Domain
 {
@@ -144,7 +145,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             {
                 actions[i].Should()
                     .Throw<InvalidOperationException>()
-                    .WithMessage(CommonErrorMessages.CouldNotApplyOperationForDroppedEntity);
+                    .WithMessage(Errors.Common.CouldNotApplyOperationForDroppedEntity);
             }
         }
     }

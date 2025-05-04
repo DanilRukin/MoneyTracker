@@ -2,11 +2,8 @@
 using MoneyTracker.CurrencyService.Domain.CurrencyAggregate.Events;
 using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using MoneyTracker.CurrencyService.Domain.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MoneyTracker.SharedConstants.ErrorCodes;
+using SharedKernel;
 
 namespace MoneyTracker.CurrencyService.UnitTests.Domain
 {
@@ -156,7 +153,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
 
             action.Should()
                 .Throw<InvalidOperationException>()
-                .WithMessage(CurrencyErrorMessages.ThisCurrencyPairDoesNotBelongToCurrency);
+                .WithMessage(Errors.Currency.ThisCurrencyPairDoesNotBelongToCurrency);
         }
 
         [Fact]
@@ -230,7 +227,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             {
                 action.Should()
                     .Throw<InvalidOperationException>()
-                    .WithMessage(CommonErrorMessages.CouldNotApplyOperationForDroppedEntity);
+                    .WithMessage(Errors.Common.CouldNotApplyOperationForDroppedEntity);
             } 
         }
     }

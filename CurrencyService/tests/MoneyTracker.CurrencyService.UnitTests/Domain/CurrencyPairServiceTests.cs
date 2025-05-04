@@ -3,6 +3,7 @@ using MoneyTracker.CurrencyService.Domain.CurrencyAggregate;
 using MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate;
 using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using MoneyTracker.CurrencyService.Domain.Services;
+using MoneyTracker.SharedConstants.ErrorCodes;
 
 namespace MoneyTracker.CurrencyService.UnitTests.Domain
 {
@@ -21,7 +22,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             var action = () => _currencyPairService.CreatePair(baseCurrency, targetCurrency);
             action.Should()
                 .Throw<InvalidOperationException>()
-                .WithMessage(CurrencyPairErrorMessages.CanNotSetTargetCurrencySameAsBase);
+                .WithMessage(Errors.CurrencyPair.CanNotSetTargetCurrencySameAsBase);
         }
 
         [Fact]
@@ -91,7 +92,7 @@ namespace MoneyTracker.CurrencyService.UnitTests.Domain
             var action = () => _currencyPairService.CreatePair(baseCurrency, targetCurrency);
             action.Should()
                 .Throw<InvalidOperationException>()
-                .WithMessage(CurrencyPairErrorMessages.CanNotCreatePairForArchivedCurrency);
+                .WithMessage(Errors.CurrencyPair.CanNotCreatePairForArchivedCurrency);
         }
     }
 }
