@@ -8,6 +8,54 @@
 		"Currency": {
 			"CanNotAddNullableCurrencyPair": {
 				"Code": "error.currency.can_not_add_nullable_currency_pair"
+			},
+			"ThisCurrencyPairDoesNotBelongToCurrency": {
+				"Code": "error.currency.this_currency_pair_does_not_belong_to_currency"
+			}
+		},
+		"CurrencyPair": {
+			"CanNotAddRateForAnotherPair": {
+				"Code": "error.currencypair.can_not_add_rate_for_another_pair"
+			},
+			"CanNotSetBaseCurrencySameAsTarget": {
+				"Code": "error.currencypair.can_not_set_base_currency_same_as_target"
+			},
+			"CanNotSetTargetCurrencySameAsBase": {
+				"Code": "error.currencypair.can_not_set_target_currency_same_as_base"
+			},
+			"CanNotCreatePairForArchivedCurrency": {
+				"Code": "error.currencypair.can_not_create_pair_for_archived_currency"
+			},
+			"CanNotActivatePairWhenBaseCurrencyIsArchived": {
+				"Code": "error.currencypair.can_not_activate_pair_when_base_currency_is_archived"
+			},
+			"CanNotActivatePairWhenTargetCurrencyIsArchived": {
+				"Code": "error.currencypair.can_not_activate_pair_when_target_currency_is_archived"
+			}
+		},
+		"ExchangeRate": {
+			"CanNotUpdateRateForNullableCurrencyPair": {
+				"Code": "error.exchangerate.can_not_update_rate_for_nullable_currency_pair"
+			},
+			"RateCanNotBeNegative": {
+				"Code": "error.exchangerate.rate_can_not_be_negative"
+			},
+			"RateCouldBeUpdatedOnlyForActiveCurrencyPair": {
+				"Code": "error.exchangerate.rate_could_be_updated_only_for_active_currency_pair"
+			},
+			"CanNotSetRateForArchivedPair": {
+				"Code": "error.exchangerate.can_not_set_rate_for_archived_pair"
+			}
+		},
+		"RateSource": {
+			"CanNotSetEmptySourceName": {
+				"Code": "error.ratesource.can_not_set_empty_source_name"
+			},
+			"CanNotSetNameStartingWithSpaces": {
+				"Code": "error.ratesource.can_not_set_name_starting_with_spaces"
+			},
+			"CanNotSetNameEndingWithSpaces": {
+				"Code": "error.ratesource.can_not_set_name_ending_with_spaces"
 			}
 		}
 	}

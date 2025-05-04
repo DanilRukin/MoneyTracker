@@ -11,5 +11,28 @@ public static class Errors
     public static class Currency
     {
         public const string CanNotAddNullableCurrencyPair = "error.currency.can_not_add_nullable_currency_pair";
+        public const string ThisCurrencyPairDoesNotBelongToCurrency = "error.currency.this_currency_pair_does_not_belong_to_currency";
+    }
+    public static class CurrencyPair
+    {
+        public const string CanNotAddRateForAnotherPair = "error.currencypair.can_not_add_rate_for_another_pair";
+        public const string CanNotSetBaseCurrencySameAsTarget = "error.currencypair.can_not_set_base_currency_same_as_target";
+        public const string CanNotSetTargetCurrencySameAsBase = "error.currencypair.can_not_set_target_currency_same_as_base";
+        public const string CanNotCreatePairForArchivedCurrency = "error.currencypair.can_not_create_pair_for_archived_currency";
+        public const string CanNotActivatePairWhenBaseCurrencyIsArchived = "error.currencypair.can_not_activate_pair_when_base_currency_is_archived";
+        public const string CanNotActivatePairWhenTargetCurrencyIsArchived = "error.currencypair.can_not_activate_pair_when_target_currency_is_archived";
+    }
+    public static class ExchangeRate
+    {
+        public const string CanNotUpdateRateForNullableCurrencyPair = "error.exchangerate.can_not_update_rate_for_nullable_currency_pair";
+        public const string RateCanNotBeNegative = "error.exchangerate.rate_can_not_be_negative";
+        public const string RateCouldBeUpdatedOnlyForActiveCurrencyPair = "error.exchangerate.rate_could_be_updated_only_for_active_currency_pair";
+        public const string CanNotSetRateForArchivedPair = "error.exchangerate.can_not_set_rate_for_archived_pair";
+    }
+    public static class RateSource
+    {
+        public const string CanNotSetEmptySourceName = "error.ratesource.can_not_set_empty_source_name";
+        public const string CanNotSetNameStartingWithSpaces = "error.ratesource.can_not_set_name_starting_with_spaces";
+        public const string CanNotSetNameEndingWithSpaces = "error.ratesource.can_not_set_name_ending_with_spaces";
     }
 }
