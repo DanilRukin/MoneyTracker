@@ -2,8 +2,15 @@
 
 namespace SharedKernel
 {
+    /// <summary>
+    /// Базовая сущность домена
+    /// </summary>
+    /// <typeparam name="TKey">Тип данных первичного ключа сущности</typeparam>
     public abstract class EntityBase<TKey> : IDomainObject, IEquatable<EntityBase<TKey>>
     {
+        /// <summary>
+        /// Id сущности
+        /// </summary>
         public TKey Id { get; protected set; }
         private List<DomainEvent> _domainEvents = new();
         public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();

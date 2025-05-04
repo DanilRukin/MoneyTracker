@@ -1,5 +1,8 @@
 ﻿namespace SharedKernel
 {
+    /// <summary>
+    /// Объект-значение
+    /// </summary>
     public abstract class ValueObject
     {
         public static bool operator ==(ValueObject left, ValueObject right)
@@ -16,6 +19,10 @@
             return !(left == right);
         }
 
+        /// <summary>
+        /// Получает набор компонентов объекта-значения,
+        /// которые используются для сравнения с другими объектами-значениями
+        /// </summary>
         protected abstract IEnumerable<object> GetEqualityComponents();
 
         public override bool Equals(object? obj)
@@ -37,6 +44,9 @@
                 .Aggregate((x, y) => x ^ y);
         }
 
+        /// <summary>
+        /// Получает копию этого объекта
+        /// </summary>
         public ValueObject GetCopy()
         {
             return MemberwiseClone() as ValueObject;
