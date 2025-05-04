@@ -2,9 +2,9 @@
 using MoneyTracker.CurrencyService.Domain.CurrencyAggregate.Events;
 using MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate;
 using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
-using SharedKernel;
 using SharedKernel.Interfaces;
 using System.Diagnostics.CodeAnalysis;
+using MoneyTracker.SharedConstants.ErrorCodes;
 
 namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
 {
@@ -119,7 +119,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
             ArgumentNullException.ThrowIfNull(currencyPair);
             if (currencyPair.BaseCurrency != this && currencyPair.TargetCurrency != this)
             {
-                throw new InvalidOperationException(CurrencyErrorMessages.ThisCurrencyPairDoesNotBelongToCurrency);
+                throw new InvalidOperationException(Errors.Currency.ThisCurrencyPairDoesNotBelongToCurrency);
             }
         }
 

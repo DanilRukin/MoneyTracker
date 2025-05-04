@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MoneyTracker.SharedKernel" Version="1.0.0" />
+    <PackageReference Include="MoneyTracker.SharedConstants" Version="1.0.1" />
+    <PackageReference Include="MoneyTracker.SharedKernel" Version="1.0.1" />
   </ItemGroup>
 
 </Project>

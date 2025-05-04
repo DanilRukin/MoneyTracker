@@ -3,6 +3,7 @@ using MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate;
 using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity.Events;
 using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using MoneyTracker.CurrencyService.Domain.RateSourceEntity;
+using MoneyTracker.SharedConstants.ErrorCodes;
 using SharedKernel;
 using System.Diagnostics;
 
@@ -57,15 +58,15 @@ namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
             ThrowIfDropped();
             if (CurrencyPair is null)
             {
-                throw new InvalidOperationException(ExchangeRateErrorMessages.CanNotUpdateRateForNullableCUrrencyPair);
+                throw new InvalidOperationException(Errors.ExchangeRate.CanNotUpdateRateForNullableCurrencyPair);
             }
             if (rate < 0m)
             {
-                throw new InvalidOperationException(ExchangeRateErrorMessages.RateCanNotBeNegative);
+                throw new InvalidOperationException(Errors.ExchangeRate.RateCanNotBeNegative);
             }
             if (!CurrencyPair.IsActive)
             {
-                throw new InvalidOperationException(ExchangeRateErrorMessages.RateCouldBeUpdatedOnlyForActiveCurrencyPair);
+                throw new InvalidOperationException(Errors.ExchangeRate.RateCouldBeUpdatedOnlyForActiveCurrencyPair);
             }
             AddDomainEvent(new ExchangeRateUpdatedDomainEvent(Id, Rate, rate));
             Rate = rate;
@@ -79,7 +80,7 @@ namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
             ArgumentNullException.ThrowIfNull(currencyPair);
             if (!currencyPair.IsActive)
             {
-                throw new InvalidOperationException(ExchangeRateErrorMessages.CanNotSetRateForArchivedPair);
+                throw new InvalidOperationException(Errors.ExchangeRate.CanNotSetRateForArchivedPair);
             }
             if (CurrencyPair is null)
             {

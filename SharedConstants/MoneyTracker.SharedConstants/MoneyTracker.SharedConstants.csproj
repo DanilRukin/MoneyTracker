@@ -7,10 +7,12 @@
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 		<CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
 		<GeneratedFolderName>_</GeneratedFolderName>
+		<Version>1.0.1</Version> <!-- Увеличьте версию -->
+		<PackageId>MoneyTracker.SharedConstants</PackageId>
 	</PropertyGroup>
 
 
-	<ItemGroup>
+    <ItemGroup>
 		<!-- Подключение анализатора -->
 		<PackageReference Include="MoneyTracker.CodeAnalyzers" Version="1.0.9">
 			<PrivateAssets>all</PrivateAssets>
@@ -32,12 +34,12 @@
 		<Delete Files="@(_GeneratedFilesToDelete)" />
 		<RemoveDir Directories="$(CompilerGeneratedFilesOutputPath)" />
 	</Target>
-
+		
 	<!-- Перемещение файлов и обновление списка компиляции -->
 	<Target Name="FixGeneratedFiles" AfterTargets="Compile">
 		<ItemGroup>
 			<_AllGeneratedFiles Include="$(CompilerGeneratedFilesOutputPath)\**\*.cs" />
-		</ItemGroup>
+	</ItemGroup>
 
 		<!-- Перемещаем все файлы в корень Generated -->
 		<Move SourceFiles="@(_AllGeneratedFiles)"
@@ -48,11 +50,9 @@
 		<RemoveDir Directories="$(CompilerGeneratedFilesOutputPath)\MoneyTracker.CodeAnalyzers" />
 
 		<!-- Обновляем список файлов для компиляции -->
-		<ItemGroup>
+	<ItemGroup>
 			<Compile Remove="$(CompilerGeneratedFilesOutputPath)\**\*.cs" />
 			<Compile Include="$(CompilerGeneratedFilesOutputPath)\*.cs" />
-		</ItemGroup>
+	</ItemGroup>
 	</Target>
-
-
 </Project>

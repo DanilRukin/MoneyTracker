@@ -3,7 +3,7 @@ using MoneyTracker.CurrencyService.Domain.CurrencyAggregate;
 using MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate.Events;
 using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity;
 using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
-using SharedKernel;
+using MoneyTracker.SharedConstants.ErrorCodes;
 using SharedKernel.Interfaces;
 
 namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
@@ -65,11 +65,11 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
             {
                 if (!BaseCurrency.IsActive)
                 {
-                    throw new InvalidOperationException(CurrencyPairErrorMessages.CanNotActivatePairWhenBaseCurrencyIsArchived);
+                    throw new InvalidOperationException(Errors.CurrencyPair.CanNotActivatePairWhenBaseCurrencyIsArchived);
                 }
                 if (!TargetCurrency.IsActive)
                 {
-                    throw new InvalidOperationException(CurrencyPairErrorMessages.CanNotActivatePairWhenTargetCurrencyIsArchived);
+                    throw new InvalidOperationException(Errors.CurrencyPair.CanNotActivatePairWhenTargetCurrencyIsArchived);
                 }
                 IsActive = true;
                 AddDomainEvent(new CurrencyPairActivatedDomainEvent(Id));
@@ -99,7 +99,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
             ArgumentNullException.ThrowIfNull(rate);
             if (rate.CurrencyPair != this)
             {
-                throw new InvalidOperationException(CurrencyPairErrorMessages.CanNotAddRateForAnotherPair);
+                throw new InvalidOperationException(Errors.CurrencyPair.CanNotAddRateForAnotherPair);
             }
             if (!_exchangeRates.Contains(rate))
             {
@@ -116,7 +116,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
             ValidateCurrencyCommonProperties(currency);
             if (TargetCurrency != null && TargetCurrency == currency)
             {
-                throw new InvalidOperationException(CurrencyPairErrorMessages.CanNotSetBaseCurrenceSameAsTarget);
+                throw new InvalidOperationException(Errors.CurrencyPair.CanNotSetBaseCurrencySameAsTarget);
             }
         }
 
@@ -128,7 +128,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
             ValidateCurrencyCommonProperties(currency);
             if (BaseCurrency != null && BaseCurrency == currency)
             {
-                throw new InvalidOperationException(CurrencyPairErrorMessages.CanNotSetTargetCurrencySameAsBase);
+                throw new InvalidOperationException(Errors.CurrencyPair.CanNotSetTargetCurrencySameAsBase);
             }
         }
 
@@ -140,7 +140,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
             ArgumentNullException.ThrowIfNull(currency);
             if (!currency.IsActive)
             {
-                throw new InvalidOperationException(CurrencyPairErrorMessages.CanNotCreatePairForArchivedCurrency);
+                throw new InvalidOperationException(Errors.CurrencyPair.CanNotCreatePairForArchivedCurrency);
             }
         }
 
