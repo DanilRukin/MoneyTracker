@@ -1,0 +1,21 @@
+{
+  "Database": {
+    "ActiveProfile": "Postgres",
+    "Profiles": {
+      "Postgres": {
+        "ConnectionString": "Host=192.168.0.26;Port=5432;Database=ProjectManagementSystem;Username=dvrukin;Password=qwerty123@",
+        "Options": {
+          "EnableRetryOnFailure": true,
+          "CommandTimeout": 30
+        }
+      },
+      "SqlServer": {
+        "ConnectionString": "Data Source=tcp:192.168.0.19,1433\\MSSQLSERVER;Initial Catalog=test;User ID=dvrukin;Password=qwerty123@;TrustServerCertificate=true",
+        "MigrationAssembly": "Sibers.ProjectManagementSystem.Data.MSSQL"
+      },
+      "SQLite": {
+        "ConnectionString": "DataSource=:memory:"
+      }
+    }
+  }
+}
