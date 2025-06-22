@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace MoneyTracker.CurrencyService.Data.DataProfiles.Base
+﻿namespace MoneyTracker.CurrencyService.Data.DataProfiles.Base
 {
     /// <summary>
     /// Фабрика профилей данных
@@ -10,6 +8,6 @@ namespace MoneyTracker.CurrencyService.Data.DataProfiles.Base
         /// <summary>
         /// Создает профиль для подключения к БД
         /// </summary>
-        DataProfile<TDbContext> CreateProfile<TDbContext>() where TDbContext: DbContext;
+        DataProfile CreateProfile();
     }
 }

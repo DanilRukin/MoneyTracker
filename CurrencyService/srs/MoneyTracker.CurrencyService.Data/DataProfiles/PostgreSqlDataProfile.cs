@@ -7,7 +7,7 @@ namespace MoneyTracker.CurrencyService.Data.DataProfiles
     /// <summary>
     /// Профиль данных для PostgreSQL
     /// </summary>
-    public class PostgreSqlDataProfile : DataProfile<CurrencyServiceContext>
+    public class PostgreSqlDataProfile : DataProfile
     {
         private readonly IDataSeeder _dataSeeder;
         public PostgreSqlDataProfile(DatabaseProfileConfig config, IDataSeeder dataSeeder) : base(config)
@@ -39,7 +39,7 @@ namespace MoneyTracker.CurrencyService.Data.DataProfiles
             });
         }
 
-        protected override Task SeedDataAsync(CurrencyServiceContext context)
+        protected override Task SeedDataAsync()
         {
             return _dataSeeder.SeedData();
         }

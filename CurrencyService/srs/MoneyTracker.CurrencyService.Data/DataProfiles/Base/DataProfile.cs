@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MoneyTracker.CurrencyService.Data.DataProfiles.Base
 {
-    public abstract class DataProfile<TDbContext> where TDbContext: DbContext
+    public abstract class DataProfile
     {
         protected readonly DatabaseProfileConfig _config;
 
@@ -13,7 +13,7 @@ namespace MoneyTracker.CurrencyService.Data.DataProfiles.Base
         }
 
         /// <summary>
-        /// Конфигурирует <typeparamref name="TDbContext"/>
+        /// Конфигурирует БД
         /// </summary>
         public abstract void ConfigureDbContext(DbContextOptionsBuilder builder);
 
@@ -23,7 +23,7 @@ namespace MoneyTracker.CurrencyService.Data.DataProfiles.Base
         public virtual async Task InitializeAsync(IServiceProvider services)
         {
             using var scope = services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<TDbContext>();
+            var context = scope.ServiceProvider.GetRequiredService<DbContext>();
 
             if (_config.MigrationAssembly != null)
             {
@@ -32,13 +32,13 @@ namespace MoneyTracker.CurrencyService.Data.DataProfiles.Base
 
             if (ShouldSeedData())
             {
-                await SeedDataAsync(context);
+                await SeedDataAsync();
             }
         }
 
         protected virtual bool ShouldSeedData()
         => _config is not SqlServerConfig; // Пример логики
 
-        protected abstract Task SeedDataAsync(TDbContext context);
+        protected abstract Task SeedDataAsync();
     }
 }
