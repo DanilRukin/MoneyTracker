@@ -4,6 +4,7 @@
     "Profiles": {
       "Postgres": {
         "ConnectionString": "Host=192.168.0.26;Port=5432;Database=ProjectManagementSystem;Username=dvrukin;Password=qwerty123@",
+        "MigrationAssembly": "MoneyTracker.CurrencyService.Data.Postgres",
         "Options": {
           "EnableRetryOnFailure": true,
           "CommandTimeout": 30
@@ -11,10 +12,27 @@
       },
       "SqlServer": {
         "ConnectionString": "Data Source=tcp:192.168.0.19,1433\\MSSQLSERVER;Initial Catalog=test;User ID=dvrukin;Password=qwerty123@;TrustServerCertificate=true",
-        "MigrationAssembly": "Sibers.ProjectManagementSystem.Data.MSSQL"
+        "MigrationAssembly": "MoneyTracker.CurrencyService.Data.MSSQL",
+        "Options": {
+          "EnableRetryOnFailure": true,
+          "CommandTimeout": 30
+        }
       },
       "SQLite": {
-        "ConnectionString": "DataSource=:memory:"
+        "ConnectionString": "DataSource=:memory:",
+        "MigrationAssembly": "MoneyTracker.CurrencyService.Data.SQLite",
+        "Options": {
+          "EnableRetryOnFailure": true,
+          "CommandTimeout": 30
+        }
+      },
+      "InMemory": {
+        "ConnectionString": "DataSource=:memory:",
+        "MigrationAssembly": "MoneyTracker.CurrencyService.Data.InMemory",
+        "Options": {
+          "EnableRetryOnFailure": true,
+          "CommandTimeout": 30
+        }
       }
     }
   }

@@ -57,6 +57,14 @@
 			"CanNotSetNameEndingWithSpaces": {
 				"Code": "error.ratesource.can_not_set_name_ending_with_spaces"
 			}
+		},
+		"Data": {
+			"InvalidConfig": {
+				"Code": "error.data.invalid_config"
+			},
+			"UnsupportedProfile": {
+				"Code": "error.data.unsupported_profile"
+			}
 		}
 	}
 }

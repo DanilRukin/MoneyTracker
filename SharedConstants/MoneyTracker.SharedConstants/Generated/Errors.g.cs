@@ -35,4 +35,9 @@ public static class Errors
         public const string CanNotSetNameStartingWithSpaces = "error.ratesource.can_not_set_name_starting_with_spaces";
         public const string CanNotSetNameEndingWithSpaces = "error.ratesource.can_not_set_name_ending_with_spaces";
     }
+    public static class Data
+    {
+        public const string InvalidConfig = "error.data.invalid_config";
+        public const string UnsupportedProfile = "error.data.unsupported_profile";
+    }
 }

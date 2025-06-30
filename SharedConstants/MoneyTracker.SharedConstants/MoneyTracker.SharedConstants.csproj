@@ -7,7 +7,7 @@
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 		<CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
 		<GeneratedFolderName>_</GeneratedFolderName>
-		<Version>1.0.1</Version> <!-- Увеличьте версию -->
+		<Version>1.0.2</Version> <!-- Увеличьте версию -->
 		<PackageId>MoneyTracker.SharedConstants</PackageId>
 	</PropertyGroup>
 
