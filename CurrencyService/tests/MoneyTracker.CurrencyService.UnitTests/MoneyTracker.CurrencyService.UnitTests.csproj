@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="8.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+    <PackageReference Include="MoneyTracker.Infrastructure" Version="1.0.3" />
     <PackageReference Include="MoneyTracker.SharedConstants" Version="1.0.2" />
     <PackageReference Include="MoneyTracker.SharedKernel" Version="1.0.1" />
     <PackageReference Include="xunit" Version="2.4.2" />

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MoneyTracker.CurrencyService.Data.SeedData.Base;
 using MoneyTracker.CurrencyService.Domain.CurrencyAggregate;
 using MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate;
 using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity;
 using MoneyTracker.CurrencyService.Domain.RateSourceEntity;
 using MoneyTracker.CurrencyService.Domain.Services;
+using MoneyTracker.Infrastructure.Data.Base;
 
 namespace MoneyTracker.CurrencyService.Data.SeedData
 {
@@ -42,15 +42,12 @@ namespace MoneyTracker.CurrencyService.Data.SeedData
 
 
 
-        public async Task SeedData(bool clearExisting = true)
+        public async Task SeedDataAsync(CancellationToken token)
         {
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                if (clearExisting)
-                {
-                    await ClearDatabaseAsync();
-                }
+                await ClearDatabaseAsync();
                 if (!await _context.Currencies.AnyAsync())
                 {
                     await FillCurrenciesAsync();
