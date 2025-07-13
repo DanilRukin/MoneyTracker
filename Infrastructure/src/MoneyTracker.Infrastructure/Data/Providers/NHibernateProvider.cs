@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using MoneyTracker.ErrorCodes;
 using MoneyTracker.Infrastructure.Data.Base;
 using NHibernate;
 using NHibernate.Dialect;
@@ -11,6 +12,7 @@ namespace MoneyTracker.Infrastructure.Data.Providers
     /// </summary>
     public class NHibernateProvider : IDatabaseProvider
     {
+        /// <inheritdoc/>
         public IServiceCollection Configure(IServiceCollection services, DatabaseOptions options)
         {
             services.AddSingleton<ISessionFactory>(sp =>
@@ -33,7 +35,7 @@ namespace MoneyTracker.Infrastructure.Data.Providers
                             db.ConnectionString = options.ConnectionString;
                             break;
                         default:
-                            throw new NotSupportedException($"Unsupported provider: {options.Provider}");
+                            throw new NotSupportedException(Errors.Infrastructure.Data.UnsupportedDataProvider);
                     }
                 });
 
@@ -49,6 +51,7 @@ namespace MoneyTracker.Infrastructure.Data.Providers
             return services;
         }
 
+        /// <inheritdoc/>
         public async Task InitializeAsync(IServiceProvider services, DatabaseOptions options, CancellationToken token)
         {
             if (options.AutoMigrate)

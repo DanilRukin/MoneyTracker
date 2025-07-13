@@ -28,8 +28,4 @@
     <ProjectReference Include="..\..\src\MoneyTracker.Infrastructure\MoneyTracker.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\Fakes\" />
-  </ItemGroup>
-
 </Project>

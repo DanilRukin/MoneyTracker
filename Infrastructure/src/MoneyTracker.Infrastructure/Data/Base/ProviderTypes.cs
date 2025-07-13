@@ -11,9 +11,24 @@ namespace MoneyTracker.Infrastructure.Data.Base
     /// </summary>
     public enum ProviderTypes
     {
+        /// <summary>
+        /// PostgreSQL
+        /// </summary>
         Postgres,
+
+        /// <summary>
+        /// SQLServer
+        /// </summary>
         SqlServer,
+
+        /// <summary>
+        /// SQLite
+        /// </summary>
         Sqlite,
+
+        /// <summary>
+        /// InMemoryDatabase
+        /// </summary>
         InMemory
     }
 }

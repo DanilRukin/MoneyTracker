@@ -4,6 +4,17 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<VersionPrefix>1.0.3</VersionPrefix>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<IncludeSymbols>true</IncludeSymbols>
+	<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+	<Title>Инфраструктурные механизмы для сервисов MoneyTracker</Title>
+	<Authors>DanilRukin</Authors>
+	<Product>MoneyTracker</Product>
+	<Description>Инфраструктурные механизмы для сервисов MoneyTracker</Description>
+	<PackageIcon>infrastructure.png</PackageIcon>
+	<RepositoryUrl>https://github.com/DanilRukin/MoneyTracker</RepositoryUrl>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,5 +35,14 @@
     <PackageReference Include="NHibernate" Version="5.5.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
   </ItemGroup>
+	<ItemGroup>
+		<Compile Include="../../../Shared/ErrorCodes/InfrastructureErrors.cs" Link="ErrorCodes/InfrastructureErrors.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include="..\..\images\infrastructure.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
 
 </Project>

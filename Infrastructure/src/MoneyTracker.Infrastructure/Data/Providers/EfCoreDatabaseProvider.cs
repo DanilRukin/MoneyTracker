@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using MoneyTracker.ErrorCodes;
 using MoneyTracker.Infrastructure.Data.Base;
 
 namespace MoneyTracker.Infrastructure.Data.Providers
@@ -9,6 +10,7 @@ namespace MoneyTracker.Infrastructure.Data.Providers
     /// </summary>
     public class EfCoreDatabaseProvider : IDatabaseProvider
     {
+        /// <inheritdoc/>
         public IServiceCollection Configure(IServiceCollection services, DatabaseOptions options)
         {
             services.AddDbContext<DbContext>(builder =>
@@ -25,13 +27,14 @@ namespace MoneyTracker.Infrastructure.Data.Providers
                         builder.UseInMemoryDatabase(options.ConnectionString);
                         break;
                     default:
-                        throw new NotSupportedException($"Unsupported provider: {options.Provider}");
+                        throw new NotSupportedException(Errors.Infrastructure.Data.UnsupportedDataProvider);
                 }
             });
 
             return services;
         }
 
+        /// <inheritdoc/>
         public async Task InitializeAsync(IServiceProvider services, DatabaseOptions options, CancellationToken token)
         {
             if (options.AutoMigrate && options.Provider != ProviderTypes.InMemory)

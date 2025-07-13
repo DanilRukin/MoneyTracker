@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MoneyTracker.ErrorCodes;
 using MoneyTracker.Infrastructure.Data.Base;
 using MoneyTracker.Infrastructure.Data.Configuration;
 using MoneyTracker.Infrastructure.Data.Providers;
@@ -37,7 +38,7 @@ namespace MoneyTracker.Infrastructure.Data.Extensions
                     services.AddSingleton<IDatabaseProvider, DapperProvider>();
                     break;
                 default:
-                    throw new NotSupportedException($"Unsupported ORM: {options.OrmType}");
+                    throw new NotSupportedException(Errors.Infrastructure.Data.UnsupportedOrm);
             }
 
             return services;
@@ -58,17 +59,17 @@ namespace MoneyTracker.Infrastructure.Data.Extensions
             services.AddDatabaseProvider(options =>
             {
                 options = configuration.GetSection(ConfigKeys.Database.Get()).Get<DatabaseOptions>()
-                    ?? throw new InvalidOperationException("Database configuration is missing");
+                    ?? throw new InvalidOperationException(Errors.Infrastructure.Data.MissingConfiguration);
 
                 // Валидация значений
                 if (!Enum.IsDefined(typeof(OrmTypes), options.OrmType))
                 {
-                    throw new ArgumentException($"Invalid ORM type: {options.OrmType}");
+                    throw new ArgumentException(Errors.Infrastructure.Data.InvalidOrmType);
                 }
 
                 if (!Enum.IsDefined(typeof(ProviderTypes), options.Provider))
                 {
-                    throw new ArgumentException($"Invalid DB engine: {options.Provider}");
+                    throw new ArgumentException(Errors.Infrastructure.Data.InvalidDbProvider);
                 }
             });
             return services;

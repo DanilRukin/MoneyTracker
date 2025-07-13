@@ -12,6 +12,7 @@ namespace MoneyTracker.Infrastructure.Data.Providers
     /// </summary>
     public class DapperProvider : IDatabaseProvider
     {
+        /// <inheritdoc/>
         public IServiceCollection Configure(IServiceCollection services, DatabaseOptions options)
         {
             services.AddScoped<IDbConnection>(_ =>
@@ -24,6 +25,7 @@ namespace MoneyTracker.Infrastructure.Data.Providers
             return services;
         }
 
+        /// <inheritdoc/>
         public Task InitializeAsync(IServiceProvider services, DatabaseOptions options, CancellationToken token)
         {
             // Dapper не требует миграций, но можно добавить скрипты
@@ -41,7 +43,7 @@ namespace MoneyTracker.Infrastructure.Data.Providers
             {
                 ProviderTypes.Sqlite => new SqliteConnection(options.ConnectionString),
                 ProviderTypes.Postgres => new NpgsqlConnection(options.ConnectionString),
-                _ => throw new NotSupportedException($"Unsupported provider: {options.Provider}")
+                _ => throw new NotSupportedException(ErrorCodes.Errors.Infrastructure.Data.UnsupportedDataProvider)
             };
         }
     }
