@@ -23,10 +23,12 @@ namespace MoneyTracker.CurrencyService.Data.Configurations
 
             builder.HasOne(e => e.CurrencyPair)
                 .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
             builder.HasOne(e => e.RateSource)
                 .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
         }
     }
 }

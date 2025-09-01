@@ -6,6 +6,7 @@ using MoneyTracker.CurrencyService.Domain.RateSourceEntity;
 using MoneyTracker.SharedConstants.ErrorCodes;
 using SharedKernel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
 {
@@ -38,6 +39,12 @@ namespace MoneyTracker.CurrencyService.Domain.ExchangeRateEntity
         /// Источник курса валют
         /// </summary>
         public RateSource RateSource { get; protected set; }
+
+        /// <summary>
+        /// EF Core only
+        /// </summary>
+        [ExcludeFromCodeCoverage]
+        protected ExchangeRate() { }
 
         internal ExchangeRate(ExchangeRateBuilder builder)
         {

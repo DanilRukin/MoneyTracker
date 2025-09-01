@@ -22,13 +22,13 @@ namespace MoneyTracker.CurrencyService.Data.Configurations
             builder.Property(cp => cp.IsActive).IsRequired().HasDefaultValue(true);
 
             builder.HasOne(cp => cp.BaseCurrency)
-                .WithMany()
+                .WithMany(BaseCurrencyPairsNavigationFieldName)
                 .HasForeignKey(BaseCurrencyIdFkName)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(cp => cp.TargetCurrency)
-                .WithMany()
+                .WithMany(TargetCurrencyPairsNavigationFieldName)
                 .HasForeignKey(TargetCurrencyIdFkName)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(cp => cp.ExchangeRates)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);

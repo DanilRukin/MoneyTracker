@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MoneyTracker.CurrencyService.Data
+﻿namespace MoneyTracker.CurrencyService.Data
 {
     /// <summary>
     /// Константы, использующиеся в контексте <see cref="CurrencyServiceContext"/>
@@ -17,5 +11,7 @@ namespace MoneyTracker.CurrencyService.Data
         internal const string ExchangeRatesTableName = "ExchnageRates";
         internal const string BaseCurrencyIdFkName = "BaseCurrencyId";
         internal const string TargetCurrencyIdFkName = "TargetCurrencyId";
+        internal const string BaseCurrencyPairsNavigationFieldName = "_baseCurrencyPairs";
+        internal const string TargetCurrencyPairsNavigationFieldName = "_targetCurrencyPairs";
     }
 }

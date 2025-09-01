@@ -33,30 +33,31 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
         /// </summary>
         public bool IsActive { get; protected set; }
 
-        /// <summary>
-        /// Список связанных валют
-        /// </summary>
-        private List<CurrencyPair> _currencyPairs = new List<CurrencyPair>();
+        private List<CurrencyPair> _baseCurrencyPairs = new List<CurrencyPair>();
+
+        private List<CurrencyPair> _targetCurrencyPairs = new List<CurrencyPair>();
+
+        private List<CurrencyPair> AllPairs => _targetCurrencyPairs
+            .Concat(_baseCurrencyPairs)
+            .ToList();
 
         /// <summary>
         /// Список связанных валют
         /// </summary>
-        public IReadOnlyCollection<CurrencyPair>? CurrencyPairs => _currencyPairs.AsReadOnly();
+        public IReadOnlyCollection<CurrencyPair>? CurrencyPairs => AllPairs
+            .ToList()
+            .AsReadOnly();
 
         /// <summary>
         /// Список валютных пар, где данная валюта является основной
         /// </summary>
-        public IReadOnlyCollection<CurrencyPair>? OnThesePairsIsBase => _currencyPairs
-            .Where(pair => pair.BaseCurrency?.Id == Id)
-            .ToList()
+        public IReadOnlyCollection<CurrencyPair>? OnThesePairsIsBase => _baseCurrencyPairs
             .AsReadOnly();
 
         /// <summary>
         /// Список валютных пар, где данная валюта является целевой
         /// </summary>
-        public IReadOnlyCollection<CurrencyPair>? OnThesePairsIsTarget => _currencyPairs
-            .Where(pair => pair.TargetCurrency?.Id == Id)
-            .ToList()
+        public IReadOnlyCollection<CurrencyPair>? OnThesePairsIsTarget => _targetCurrencyPairs
             .AsReadOnly();
 
         [ExcludeFromCodeCoverage]
@@ -93,7 +94,7 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
             {
                 IsActive = false;
                 AddDomainEvent(new CurrencyArchivedDomainEvent(Id));
-                _currencyPairs.ForEach(pair => pair.Archive());
+                AllPairs.ForEach(pair => pair.Archive());
             }
         }
 
@@ -105,9 +106,13 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
         {
             ThrowIfDropped();
             ValidateCurrencyPair(currencyPair);
-            if (!_currencyPairs.Contains(currencyPair))
+            if (currencyPair.BaseCurrency == this && !_baseCurrencyPairs.Contains(currencyPair))
             {
-                _currencyPairs.Add(currencyPair);
+                _baseCurrencyPairs.Add(currencyPair);
+            }
+            else if (currencyPair.TargetCurrency == this && !_targetCurrencyPairs.Contains(currencyPair))
+            {
+                _targetCurrencyPairs.Add(currencyPair);
             }
         }
 
@@ -131,19 +136,28 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyAggregate
         {
             ThrowIfDropped();
             ValidateCurrencyPair(currencyPair);
-            if (_currencyPairs.Contains(currencyPair))
+            if (_targetCurrencyPairs.Contains(currencyPair))
             {
-                _currencyPairs.Remove(currencyPair);
+                _targetCurrencyPairs.Remove(currencyPair);
                 currencyPair.Drop();
             } 
+            else if (_baseCurrencyPairs.Contains(currencyPair))
+            {
+                _baseCurrencyPairs.Remove(currencyPair);
+                currencyPair.Drop();
+            }
         }
 
         protected override void Invalidate()
         {
             isDropped = false;
-            while (_currencyPairs.Count > 0)
+            while (_targetCurrencyPairs.Count > 0)
             {
-                _currencyPairs[0].Drop();
+                _targetCurrencyPairs[0].Drop();
+            }
+            while (_baseCurrencyPairs.Count > 0)
+            {
+                _baseCurrencyPairs[0].Drop();
             }
             isDropped = true;
         }
