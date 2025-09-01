@@ -4,6 +4,7 @@ using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using MoneyTracker.CurrencyService.Domain.RateSourceEntity.Events;
 using MoneyTracker.SharedConstants.ErrorCodes;
 using SharedKernel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MoneyTracker.CurrencyService.Domain.RateSourceEntity
 {
@@ -32,6 +33,12 @@ namespace MoneyTracker.CurrencyService.Domain.RateSourceEntity
             ThrowWhenNameIsInvalid(name);
             Name = name;
         }
+
+        /// <summary>
+        /// EF Core only
+        /// </summary>
+        [ExcludeFromCodeCoverage]
+        protected RateSource() { }
 
         /// <summary>
         /// Изменяет наименование источника курса валют

@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyTracker.SharedConstants", "MoneyTracker.SharedConstants\MoneyTracker.SharedConstants.csproj", "{841A3D87-E48D-477E-BB60-6D1079B369F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyTracker.SharedConstants.Generator", "MoneyTracker.SharedConstants.Generator\MoneyTracker.SharedConstants.Generator.csproj", "{7AE78CA0-8EAC-4BDB-A556-11916E64F9EB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -5,6 +5,7 @@ using MoneyTracker.CurrencyService.Domain.ExchangeRateEntity;
 using MoneyTracker.CurrencyService.Domain.Infrastructure.ErrorMessages;
 using MoneyTracker.SharedConstants.ErrorCodes;
 using SharedKernel.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
 {
@@ -53,6 +54,12 @@ namespace MoneyTracker.CurrencyService.Domain.CurrencyPairAgregate
             TargetCurrency = builder.TargetCurrency;
             IsActive = true;
         }
+
+        /// <summary>
+        /// EF Core only
+        /// </summary>
+        [ExcludeFromCodeCoverage]
+        protected CurrencyPair() { }
 
 
         /// <summary>
