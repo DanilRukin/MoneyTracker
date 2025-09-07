@@ -1,0 +1,123 @@
+### Настройка Visual Studio Code для React-разработки
+
+#### 1. Установка необходимого ПО (Предварительные требования)
+
+Прежде чем открывать VSCode, убедитесь, что установлено:
+
+1.  **Node.js (LTS версия):** Это среда выполнения JavaScript. Без неё ничего не заработает.
+    *   *Ссылка:* [https://nodejs.org](https://nodejs.org)
+    *   *Проверка установки:* Откройте терминал (Cmd/PowerShell в Windows) и выполните:
+        ```bash
+        node --version
+        npm --version
+        ```
+
+2.  **Git:** Система контроля версий. Крайне рекомендуется использовать.
+    *   *Ссылка:* [https://git-scm.com](https://git-scm.com)
+    *   *Проверка:* В терминале:
+        ```bash
+        git --version
+        ```
+
+#### 2. Установка и настройка Visual Studio Code
+
+1.  **Скачайте и установите VSCode:**
+    *   *Ссылка:* [https://code.visualstudio.com](https://code.visualstudio.com)
+
+2.  **Установите обязательные расширения (Extensions):**
+    Откройте VSCode и перейдите во вкладку Extensions (Ctrl+Shift+X).
+
+    *   **Обязательные:**
+        *   `ES7+ React/Redux/React-Native snippets` (dsznajder) - Сниппеты для быстрой генерации кода.
+        *   `TypeScript Hero` (christian-kohler) - Управление импортами в TypeScript.
+        *   `Auto Rename Tag` (Jun Han) - Автоматически переименовывает парный HTML/JSX тег.
+        *   `GitLens` (Eric Amodio) - Невероятно расширяет возможности работы с Git внутри IDE.
+        *   `Prettier - Code formatter` (Prettier) - Форматирует код автоматически. *Должен быть установлен в проект!*
+        *   `ESLint` (Microsoft) - Подсвечивает ошибки и предупреждения в коде. *Должен быть установлен в проект!*
+        *   `Material Icon Theme` (Philipp Kief) - Красивые иконки для файлов и папок. Наглядно организует структуру проекта.
+
+    *   **Сильно рекомендуется:**
+        *   `Error Lens` (Alexander) - Подсвечивает ошибки и предупреждения прямо в строке кода.
+        *   `Auto Import` (Steoates) - Автоматически находит и добавляет импорты для компонентов и функций.
+        *   `Thunder Client` (Ranga Vadivel) - Мощный REST-клиент для тестирования вашего .NET API прямо из VSCode (аналог Postman).
+
+3.  **Настройте параметры VSCode (Settings):**
+    Нажмите `Ctrl + ,` (или File -> Preferences -> Settings). Рекомендуемые настройки:
+    *   **Editor: Format On Save** - включите (`editor.formatOnSave: true`). Prettier будет форматировать код при каждом сохранении.
+    *   **Editor: Default Formatter** - установите `Prettier` (`"editor.defaultFormatter": "esbenp.prettier-vscode"`).
+    *   **Files: Auto Save** - установите `afterDelay` (`"files.autoSave": "afterDelay"`).
+    *   **Emmet: Include Languages** - добавьте для `javascript` значение `javascriptreact` (`"emmet.includeLanguages": { "javascript": "javascriptreact" }`). Это позволит использовать Emmet в JSX/TSX файлах.
+
+---
+
+### Создание и первый запуск приложения
+
+Мы будем использовать **Vite** — это современный и быстрый инструмент для сборки.
+
+1.  **Создание нового проекта:**
+    Откройте терминал в той папке, где вы хотите создать проект, и выполните команду:
+
+    ```bash
+    # Для создания проекта на JavaScript
+    npm create vite@latest money-tracker-app -- --template react
+
+    # ИЛИ ДЛЯ ТИПСРИПТА (ВЫБЕРИТЕ ЭТОТ ВАРИАНТ!)
+    npm create vite@latest money-tracker-app -- --template react-ts
+    ```
+
+    Эта команда:
+    *   Скачает и запустит `create-vite`.
+    *   Создаст папку `money-tracker-app`.
+    *   Использует шаблон `react-ts` для создания проекта на React с TypeScript.
+
+2.  **Переход в папку проекта и установка зависимостей:**
+    ```bash
+    cd money-tracker-app
+    npm install
+    ```
+    Команда `npm install` прочитает файл `package.json` и установит все необходимые для работы библиотеки (React, ReactDOM, Vite и т.д.) в папку `node_modules`.
+
+3.  **Запуск development-сервера:**
+    ```bash
+    npm run dev
+    ```
+    Vite запустит development-сервер. В терминале вы увидите сообщение с локальным адресом (скорее всего, `http://localhost:5173`).
+
+4.  **Откройте браузер и перейдите по адресу `http://localhost:5173`.** Вы увидите стартовую страницу Vite + React.
+
+    **Поздравляю! Ваше первое React-приложение запущено и работает.**
+
+---
+
+### Следующие шаги ( immediate next steps )
+
+1.  **Очистка шаблона:** Удалите ненужные файлы из шаблона (например, `public/vite.svg`, `src/assets/react.svg`) и очистите содержимое `App.tsx` и `App.css`.
+2.  **Установите необходимые библиотеки:** Откройте новый терминал в папке проекта и начните устанавливать наш стек:
+    ```bash
+    # UI Kit & Стилизация
+    npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
+    npm install @fontsource/roboto
+
+    # State Management & API
+    npm install @tanstack/react-query zustand
+    npm install axios
+
+    # Формы и Валидация
+    npm install react-hook-form
+    npm install zod @hookform/resolvers
+
+    # Визуализация данных
+    npm install recharts
+
+    # Вспомогательные
+    npm install date-fns
+    npm install lucide-react
+    ```
+3.  **Настройте линтинг и форматирование:**
+    ```bash
+    npm install -D eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh @typescript-eslint/eslint-plugin @typescript-eslint/parser
+    npm install -D prettier eslint-config-prettier eslint-plugin-prettier
+    ```
+    После установки создайте файлы конфигурации `.eslintrc.cjs` и `.prettierrc` в корне проекта. Их конфиги можно легко найти в официальной документации или сгенерировать.
+
+Теперь ваша среда полностью настроена для начала разработки MoneyTracker! Вы можете начать создавать структуру папок по FSD и писать первый компонент.
