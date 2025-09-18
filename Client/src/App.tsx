@@ -8,7 +8,8 @@ import {
   NavigationIds,
   PagesDescriptions,
   PagesTitles,
-} from "./infrastructure/constants";
+} from "./shared/constants";
+import { DevModeProvider } from "./contexts";
 
 function AppContent() {
   const { currentPage, theme } = useApp();
@@ -111,9 +112,11 @@ function AppContent() {
 
 function App() {
   return (
-    <AppProvider>
-      <AppContent />
-    </AppProvider>
+    <DevModeProvider>
+      <AppProvider>
+        <AppContent />
+      </AppProvider>
+    </DevModeProvider>
   );
 }
 

@@ -3,7 +3,7 @@ import {
   NavigationIds,
   NavigationLabels,
   NavigationRoutes,
-} from "../../../../infrastructure/constants/Navigation";
+} from "../../../../shared/constants/Navigation";
 import {
   Brightness4,
   Brightness7,
@@ -44,6 +44,8 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useApp } from "../../../../contexts/AppContext";
+import { useDevMode } from "../../../../contexts";
+import { useDevLogger } from "../../../../hooks";
 
 // Описываем структуру пункта меню с помощью TypeScript Interface
 interface NavigationItem {
@@ -134,9 +136,10 @@ export const Sidebar: React.FC = () => {
     userName,
     theme: appTheme,
     setTheme,
-    devMode,
-    toggleDevMode,
   } = useApp();
+
+  const { isDevMode, toggleDevMode } = useDevMode();
+  const { devLog, devWarn } = useDevLogger();
 
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
@@ -153,15 +156,20 @@ export const Sidebar: React.FC = () => {
 
   const handleThemeToggle = () => {
     setTheme(appTheme === "light" ? "dark" : "light");
+    devLog("Theme toggled", {
+      newTheme: appTheme === "light" ? "dark" : "light",
+    });
   };
 
   const handleSettingsClick = () => {
     setCurrentPage("settings");
+    devLog("Settings page requested");
   };
 
   const handleNavigationClick = (pageId: string) => {
     setCurrentPage(pageId);
     setContextMenu(null);
+    devLog("Navigation clicked", { pageId });
   };
 
   const handleContextMenu = (event: React.MouseEvent, item: NavigationItem) => {
@@ -172,6 +180,7 @@ export const Sidebar: React.FC = () => {
       itemId: item.id,
       itemLabel: item.label,
     });
+    devLog("Context menu opened", { itemId: item.id, itemLabel: item.label });
   };
 
   const handleCloseContextMenu = () => {
@@ -186,18 +195,21 @@ export const Sidebar: React.FC = () => {
         message: `ID скопирован: ${contextMenu.itemId}`,
         severity: "success",
       });
+      devLog("ID copied to clipboard", { itemId: contextMenu.itemId });
       handleCloseContextMenu();
     }
   };
 
   const handleInspectItem = () => {
     if (contextMenu?.itemId) {
-      console.log("Inspecting item:", {
+      const inspectData = {
         id: contextMenu.itemId,
         label: contextMenu.itemLabel,
         currentPage,
-        devMode,
-      });
+        isDevMode,
+        timestamp: new Date().toISOString(),
+      };
+      devLog("Inspecting item", inspectData);
       setSnackbar({
         open: true,
         message: `Инспектируем: ${contextMenu.itemLabel}`,
@@ -209,11 +221,13 @@ export const Sidebar: React.FC = () => {
 
   const handleToggleDevModeFromContext = () => {
     toggleDevMode();
+    const message = `DevMode ${!isDevMode ? "включен" : "выключен"}`;
     setSnackbar({
       open: true,
-      message: `DevMode ${!devMode ? "включен" : "выключен"}`,
+      message,
       severity: "warning",
     });
+    devWarn(message);
     handleCloseContextMenu();
   };
 
@@ -221,11 +235,22 @@ export const Sidebar: React.FC = () => {
     if (event.altKey && event.shiftKey) {
       event.preventDefault();
       toggleDevMode();
+      const message = `DevMode ${!isDevMode ? "включен" : "выключен"}`;
       setSnackbar({
         open: true,
-        message: `DevMode ${!devMode ? "включен" : "выключен"}`,
+        message,
         severity: "warning",
       });
+      devWarn(message + " (quick toggle)");
+    }
+  };
+
+  const safeToggleDevMode = () => {
+    try {
+      toggleDevMode();
+      devLog("DevMode toggled");
+    } catch (error) {
+      devWarn("Failde to toggle DevMode", error);
     }
   };
 
@@ -247,12 +272,12 @@ export const Sidebar: React.FC = () => {
         }}
         onContextMenu={handleQuickDevToggle}
       >
-        {/* Logo Section с возможностью быстрого переключения devMode */}
+        {/* Logo Section с возможностью быстрого переключения isDevMode */}
         <Box
           sx={{ p: 3, borderBottom: 1, borderColor: "divider" }}
           onContextMenu={(e) => {
             e.preventDefault();
-            toggleDevMode();
+            safeToggleDevMode();
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -260,7 +285,7 @@ export const Sidebar: React.FC = () => {
               sx={{
                 width: 32,
                 height: 32,
-                backgroundColor: devMode ? "warning.main" : "primary.main",
+                backgroundColor: isDevMode ? "warning.main" : "primary.main",
                 borderRadius: 2,
                 display: "flex",
                 alignItems: "center",
@@ -283,7 +308,7 @@ export const Sidebar: React.FC = () => {
               >
                 MoneyTracker
               </Typography>
-              {devMode && (
+              {isDevMode && (
                 <Badge
                   sx={{
                     backgroundColor: "warning.main",
@@ -344,7 +369,7 @@ export const Sidebar: React.FC = () => {
           </List>
 
           {/* Dev Navigation */}
-          {devMode && (
+          {isDevMode && (
             <>
               <Divider sx={{ my: 2, mx: 2 }} />
               <Box sx={{ px: 2, mb: 1 }}>
@@ -419,7 +444,7 @@ export const Sidebar: React.FC = () => {
           <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
             <Avatar
               sx={{
-                bgcolor: devMode ? "warning.main" : "primary.main",
+                bgcolor: isDevMode ? "warning.main" : "primary.main",
                 width: 40,
                 height: 40,
                 fontSize: "1rem",
@@ -434,7 +459,7 @@ export const Sidebar: React.FC = () => {
                 {userName}
               </Typography>
               <Typography variant="caption" color="text.secondary" noWrap>
-                {devMode ? "developer@moneyTracker" : "user@example.com"}
+                {isDevMode ? "developer@moneyTracker" : "user@example.com"}
               </Typography>
             </Box>
           </Box>
@@ -467,7 +492,7 @@ export const Sidebar: React.FC = () => {
             </Box>
 
             {/* Dev Mode Toggle */}
-            {devMode && (
+            {isDevMode && (
               <Box
                 sx={{
                   display: "flex",
@@ -484,8 +509,8 @@ export const Sidebar: React.FC = () => {
                 </Typography>
                 <Switch
                   size="small"
-                  checked={devMode}
-                  onChange={toggleDevMode}
+                  checked={isDevMode}
+                  onChange={safeToggleDevMode}
                   color="warning"
                 />
               </Box>
@@ -556,7 +581,7 @@ export const Sidebar: React.FC = () => {
             <DeveloperMode fontSize="small" />
           </ListItemIcon>
           <ListItemText>
-            {devMode ? "Выключить" : "Включить"} DevMode
+            {isDevMode ? "Выключить" : "Включить"} DevMode
           </ListItemText>
         </MenuItem>
 

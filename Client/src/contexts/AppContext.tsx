@@ -2,6 +2,7 @@
 // app/AppContext.tsx
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { type PaletteMode } from "@mui/material";
+import { useDevMode } from "./DevModeContext";
 
 interface AppContextType {
   currentPage: string;
@@ -23,19 +24,17 @@ interface AppProviderProps {
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [currentPage, setCurrentPage] = useState("dashboard");
+  const { isDevMode, toggleDevMode } = useDevMode();
   const [theme, setTheme] = useState<PaletteMode>("light");
-  const [devMode, setDevMode] = useState(false);
+  const [, setDevMode] = useState(false);
   const [userName, setUserName] = useState("Пользователь");
-  const toggleDevMode = () => {
-    setDevMode((prev) => !prev);
-  };
 
   const contextValue: AppContextType = {
     currentPage,
     setCurrentPage,
     theme,
     setTheme,
-    devMode,
+    devMode: isDevMode,
     setDevMode,
     toggleDevMode,
     userName,
