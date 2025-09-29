@@ -4,14 +4,9 @@ import React from "react";
 import { useApp } from "../../contexts";
 import { useDevLogger } from "../../hooks";
 import { WithDevTools } from "../../components/WithDevTools";
+import { MicroserviceStatusName } from "../../shared/constants/Microservices";
 import {
-  MicroservicesNames,
-  MicroservicesRoutes,
-  MicroserviceStatusName,
-  MicroservicesVersions,
-  type MicroserviceStatusNameType,
-} from "../../shared/constants/Microservices";
-import {
+  Alert,
   alpha,
   Box,
   Button,
@@ -19,13 +14,12 @@ import {
   CardContent,
   CardHeader,
   Chip,
+  CircularProgress,
   Grid,
   Paper,
   Typography,
   useTheme,
 } from "@mui/material";
-import LanguageIcon from "@mui/icons-material/Language";
-import { MicroservicesDescriptions } from "../../shared/constants/Microservices/MicroservicesDescriptions";
 import {
   AccessTime,
   Dns,
@@ -36,31 +30,39 @@ import {
   TrendingUp,
 } from "@mui/icons-material";
 import { PagesDescriptions, PagesTitles } from "../../shared/constants";
-
-interface MicroserviceStatus {
-  name: string;
-  status: MicroserviceStatusNameType;
-  version: string;
-  description: string;
-  icon: React.ReactElement;
-  route: string;
-}
-
-const microservices: MicroserviceStatus[] = [
-  {
-    name: MicroservicesNames.CURRENCY_SERVICE,
-    description: MicroservicesDescriptions.CURRENCY_SERVICE,
-    route: MicroservicesRoutes.CURRENCY_SERVICE,
-    version: MicroservicesVersions.CURRENCY_SERVICE,
-    status: MicroserviceStatusName.ONLINE,
-    icon: <LanguageIcon />,
-  },
-];
+import { useDevelopment_getServices } from "./hooks/useDevelopment_getServices";
+import { MicroserviceMapper } from "./mappers/MicroserviceMapper";
 
 export const DevPanelPage: React.FC = () => {
   const { setCurrentPage } = useApp();
   const { devLog } = useDevLogger();
   const theme = useTheme();
+  const { data, isLoading, error, isError } = useDevelopment_getServices();
+
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight={200}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Alert severity="error">
+        Ошибка при загрузке сервисов: {error?.message}
+      </Alert>
+    );
+  }
+
+  const microservices = data
+    ? data.map((service) => MicroserviceMapper.ToMicroserviceStatus(service))
+    : [];
 
   const getStatusChip = (status: string) => {
     const statusConfig = {
