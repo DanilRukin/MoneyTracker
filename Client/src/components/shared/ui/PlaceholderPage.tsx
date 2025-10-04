@@ -1,5 +1,9 @@
 import { Card, CardContent, Box, Typography } from "@mui/material";
 import React from "react";
+import { useDevTools } from "../../../contexts/DevToolsContext";
+import { useDevLogger } from "../../../hooks";
+import { useDevMode } from "../../../contexts";
+import { useShiftF12 } from "../../../hooks/useShiftF12";
 
 interface PlaceholderProps {
   title: string;
@@ -10,6 +14,18 @@ export const PlaceholderPage: React.FC<PlaceholderProps> = ({
   title,
   description,
 }) => {
+  const { devLog } = useDevLogger();
+  const { openDebugForm } = useDevTools();
+  const { isDevMode } = useDevMode();
+
+  // Добавляем горячие клавиши для этой страницы
+  useShiftF12(() => {
+    if (isDevMode) {
+      openDebugForm();
+      devLog("Debug form opened from CurrencyService");
+    }
+  }, [isDevMode, openDebugForm]);
+
   return (
     <Box
       sx={{

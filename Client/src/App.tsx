@@ -10,6 +10,11 @@ import {
   PagesTitles,
 } from "./shared/constants";
 import { DevModeProvider } from "./contexts";
+import { DevPanelPage } from "./features/devPanel";
+import { CurrencyServicePage } from "./features/currencyService/CurrencyService";
+import { MicroservicesRoutes } from "./shared/constants/Microservices";
+import { DebugForm } from "./features/dev/DebugForm";
+import { DevToolsProvider } from "./contexts/DevToolsContext";
 
 function AppContent() {
   const { currentPage, theme } = useApp();
@@ -73,12 +78,7 @@ function AppContent() {
           />
         );
       case NavigationIds.DEV_PANEL:
-        return (
-          <PlaceholderPage
-            title={PagesTitles.DEV_PANEL}
-            description={PagesDescriptions.DEV_PANEL}
-          />
-        );
+        return <DevPanelPage />;
       case NavigationIds.DEV_LOGS:
         return (
           <PlaceholderPage
@@ -93,6 +93,8 @@ function AppContent() {
             description={PagesDescriptions.DEV_FLAGS}
           />
         );
+      case MicroservicesRoutes.CURRENCY_SERVICE:
+        return <CurrencyServicePage />;
       default:
         return (
           <PlaceholderPage
@@ -106,6 +108,7 @@ function AppContent() {
     <ThemeProvider theme={appTheme}>
       <CssBaseline />
       <Layout>{renderPage()}</Layout>
+      <DebugForm />
     </ThemeProvider>
   );
 }
@@ -113,9 +116,11 @@ function AppContent() {
 function App() {
   return (
     <DevModeProvider>
-      <AppProvider>
-        <AppContent />
-      </AppProvider>
+      <DevToolsProvider>
+        <AppProvider>
+          <AppContent />
+        </AppProvider>
+      </DevToolsProvider>
     </DevModeProvider>
   );
 }
