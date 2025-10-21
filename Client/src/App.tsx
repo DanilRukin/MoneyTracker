@@ -15,6 +15,8 @@ import { CurrencyServicePage } from "./features/currencyService/CurrencyService"
 import { MicroservicesRoutes } from "./shared/constants/Microservices";
 import { DebugForm } from "./features/dev/DebugForm";
 import { DevToolsProvider } from "./contexts/DevToolsContext";
+import { AccountsPage } from "./features/accounts";
+import { TransactionsPage } from "./features/transactions";
 
 function AppContent() {
   const { currentPage, theme } = useApp();
@@ -29,19 +31,9 @@ function AppContent() {
           />
         );
       case NavigationIds.TRANSACTIONS:
-        return (
-          <PlaceholderPage
-            title={PagesTitles.TRANSACTIONS}
-            description={PagesDescriptions.TRANSACTIONS}
-          />
-        );
+        return <TransactionsPage />;
       case NavigationIds.ACCOUNTS:
-        return (
-          <PlaceholderPage
-            title={PagesTitles.ACCOUNTS}
-            description={PagesDescriptions.ACCOUNTS}
-          />
-        );
+        return <AccountsPage />;
       case NavigationIds.BUDGET:
         return (
           <PlaceholderPage
