@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MoneyTracker.Accounts.Domain.Transactions;
+using MoneyTracker.Accounts.Domain.Categories;
 
 namespace MoneyTracker.Accounts.Domain.Accounts
 {
@@ -17,12 +19,12 @@ namespace MoneyTracker.Accounts.Domain.Accounts
         /// <summary>
         /// Название счета
         /// </summary>
-        public string Name { get; protected set; }
+        public string Name { get; protected set; } = default!;
 
         /// <summary>
         /// Текущий баланс счета
         /// </summary>
-        public decimal Balance { get; protected set; }
+        public MoneyValue Balance { get; protected set; } = default!;
 
         /// <summary>
         /// Признак активности счета
@@ -44,10 +46,12 @@ namespace MoneyTracker.Accounts.Domain.Accounts
         /// </summary>
         public DateTime? ClosedAt { get; protected set; }
 
+        private List<Transaction> _transactions = new ();
+        
         /// <summary>
-        /// Сумма ежемесячного обслуживания счета
+        /// Транзакции
         /// </summary>
-        public decimal MonthlyMaintenanceFee { get; protected set; }
+        public virtual IReadOnlyCollection<Transaction> Transactions => _transactions.AsReadOnly();
 
         protected Account() { }
 
@@ -57,7 +61,7 @@ namespace MoneyTracker.Accounts.Domain.Accounts
         /// <param name="name">Имя для счета</param>
         public void SetName(string name)
         {
-            ArgumentNullException.ThrowIfNullOrWhiteSpace("Названи счета не может быть пустым!");
+            ArgumentException.ThrowIfNullOrWhiteSpace(name);
             string oldName = Name ?? string.Empty;
             Name = name;
             SetUpdateDate();
@@ -68,27 +72,33 @@ namespace MoneyTracker.Accounts.Domain.Accounts
         /// Устанавливает баланс счета
         /// </summary>
         /// <param name="balance">баланс для установки</param>
-        public void SetBalance(decimal balance)
+        private void SetInitialBalance(MoneyValue balance)
         {
-            if (balance < 0)
+            if (balance.Value < 0)
                 throw new InvalidOperationException("Баланс не может быть меньше нуля!");
-            decimal oldBalance = Balance;
             Balance = balance;
-            AddDomainEvent(new BalanceChangedEvent(oldBalance, Balance));
+            AddDomainEvent(new BalanceInitializedEvent(this.Id, balance.Value));
             SetUpdateDate();
         }
 
-        /// <summary>
-        /// Устанавливает ежемесячное обслуживание счета
-        /// </summary>
-        /// <param name="value">Стоимость обслуживания</param>
-        public void SetMonthlyMaintenanceFee(decimal value)
+        public void Income(MoneyValue value, IncomeCategory category, TransactionSource source)
         {
-            if (value < 0)
-                throw new InvalidOperationException("Ежемесячное обслуживание не может быть меньше нуля!");
-            decimal oldMonthlyMaintenanceFee = MonthlyMaintenanceFee;
-            MonthlyMaintenanceFee = value;
-            AddDomainEvent(new MonthlyMaintenanceFeeChangedEvent(oldMonthlyMaintenanceFee, MonthlyMaintenanceFee));
+            Transaction transaction = Transaction.Create(value, DateTime.UtcNow, category, source);
+            Balance += value;
+            _transactions.Add(transaction);
+            AddDomainEvent(new BalanceReplenishedEvent(value.Value, Id));
+            SetUpdateDate();
+        }
+
+        public void Expense(MoneyValue value, ExpenseCategory category, TransactionSource source)
+        {
+            if (Balance < value)
+                throw new InvalidOperationException($"Невозможно списать больше денег ({value.Value})," +
+                                                    $" чем есть на счете ({Balance})");
+            Transaction transaction = Transaction.Create(value, DateTime.UtcNow, category, source);
+            Balance -= value;
+            _transactions.Add(transaction);
+            AddDomainEvent(new BalanceReducedEvent(Id, value.Value));
             SetUpdateDate();
         }
 
@@ -98,20 +108,17 @@ namespace MoneyTracker.Accounts.Domain.Accounts
             UpdatedAt = date;
         }
 
-        public static Account Create(string name, decimal initialBalance = 0, decimal monthlyMaintenanceFee = 0)
+        public static Account Create(string name, MoneyValue initialBalance)
         {
             Account account = new();
             account.Id = Guid.NewGuid();
             account.SetName(name);
-            account.SetBalance(initialBalance);
-            account.SetMonthlyMaintenanceFee(monthlyMaintenanceFee);
+            account.SetInitialBalance(initialBalance);
 
             DateTime date = DateTime.UtcNow;
             account.CreatedAt = date;
             account.UpdatedAt = date;
             account.IsActive = true;
-            account.Balance = 0;
-
 
             return account;
         }
