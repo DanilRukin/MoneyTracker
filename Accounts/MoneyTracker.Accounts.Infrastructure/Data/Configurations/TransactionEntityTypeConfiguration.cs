@@ -55,6 +55,8 @@ namespace MoneyTracker.Accounts.Infrastructure.Data.Configurations
             builder.HasIndex(t => t.CreatedAt);
             builder.HasIndex("CategoryId");
             builder.HasIndex("CurrencyId");
+
+            builder.Ignore(t => t.DomainEvents);
         }
     }
 }

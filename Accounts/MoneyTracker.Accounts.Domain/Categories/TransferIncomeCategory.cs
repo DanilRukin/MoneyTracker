@@ -2,6 +2,7 @@
 {
     internal class TransferIncomeCategory : IncomeCategory
     {
-        public TransferIncomeCategory() : base(nameof(TransferIncomeCategory)) { }
+        protected TransferIncomeCategory() : base() { }
+        public TransferIncomeCategory(string name) : base(name) { }
     }
 }

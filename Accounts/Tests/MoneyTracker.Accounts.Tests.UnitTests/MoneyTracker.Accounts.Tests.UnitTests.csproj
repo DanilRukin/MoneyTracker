@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\MoneyTracker.Accounts.Domain\MoneyTracker.Accounts.Domain.csproj" />
+    <ProjectReference Include="..\..\MoneyTracker.Accounts.Infrastructure\MoneyTracker.Accounts.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

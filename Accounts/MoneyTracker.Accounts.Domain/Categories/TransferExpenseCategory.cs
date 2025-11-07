@@ -2,6 +2,8 @@
 {
     internal class TransferExpenseCategory : ExpenseCategory
     {
-        public TransferExpenseCategory() : base(nameof(TransferExpenseCategory)) { }
+        protected TransferExpenseCategory() : base() { }
+
+        public TransferExpenseCategory(string name) : base(name) { }
     }
 }

@@ -11,11 +11,9 @@ namespace MoneyTracker.Accounts.Domain.Categories
     internal abstract class Category : IdentifiedValueObject<int>
     {
         public string Name { get; private set; } = default!;
-        public abstract TransactionType Type { get; protected set; }
         protected override IEnumerable<object> GetEqualityComponents()
         {
             yield return Name;
-            yield return Type;
         }
 
         protected Category(string name)

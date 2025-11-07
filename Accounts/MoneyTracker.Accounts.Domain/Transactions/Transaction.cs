@@ -3,7 +3,7 @@ using SharedKernel;
 
 namespace MoneyTracker.Accounts.Domain.Transactions
 {
-    internal class Transaction : EntityBase<Guid>
+    internal abstract class Transaction : EntityBase<Guid>
     {
         public DateTime CreatedAt { get; protected set; }
 
@@ -13,22 +13,20 @@ namespace MoneyTracker.Accounts.Domain.Transactions
 
         public virtual TransactionSource TransactionSource { get; protected set; } = default!;
 
-        private Guid _accountId; // Внешний ключ для Account (только для EF)
+        public Guid AccountId { get; protected set; }
 
         protected Transaction() { }
 
-        public static Transaction Create(MoneyValue value, DateTime creationDate, Category category, TransactionSource source)
-        {
-            Transaction transaction = new()
-            {
-                Id = Guid.NewGuid(),
-                Amount = value,
-                Category = category,
-                TransactionSource = source,
-                CreatedAt = creationDate,
-            };
+        public abstract MoneyValue ApplyBalance(MoneyValue balance);
 
-            return transaction;
+        protected Transaction(DateTime createdAt, MoneyValue amount, Category category, TransactionSource transactionSource, Guid accountId)
+        {
+            Id = Guid.NewGuid();
+            CreatedAt = createdAt;
+            Amount = amount;
+            Category = category;
+            TransactionSource = transactionSource;
+            AccountId = accountId;
         }
     }
 }

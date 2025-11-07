@@ -29,5 +29,7 @@ namespace MoneyTracker.Accounts.Infrastructure.Data
         public DbSet<Currency> Currencies { get; set; }
 
         public DbSet<Category> Categories { get; set; }
+
+        public DbSet<TransactionSource> TransactionSources { get; set; }
     }
 }

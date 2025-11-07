@@ -39,7 +39,7 @@ namespace MoneyTracker.Accounts.Infrastructure.Data.Configurations
                    .IsUnique();
 
             // Игнорируем protected Id из доменной модели
-            builder.Ignore("Id");
+            //builder.Ignore("Id");
 
             // Предопределенные валюты
             builder.HasData(

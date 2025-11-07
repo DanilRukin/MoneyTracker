@@ -83,8 +83,8 @@ namespace MoneyTracker.Accounts.Domain.Accounts
 
         public void Income(MoneyValue value, IncomeCategory category, TransactionSource source)
         {
-            Transaction transaction = Transaction.Create(value, DateTime.UtcNow, category, source);
-            Balance += value;
+            IncomeTransaction transaction = IncomeTransaction.Create(DateTime.UtcNow, value, category, source, Id);
+            Balance = transaction.ApplyBalance(Balance);
             _transactions.Add(transaction);
             AddDomainEvent(new BalanceReplenishedEvent(value.Value, Id));
             SetUpdateDate();
@@ -95,8 +95,8 @@ namespace MoneyTracker.Accounts.Domain.Accounts
             if (Balance < value)
                 throw new InvalidOperationException($"Невозможно списать больше денег ({value.Value})," +
                                                     $" чем есть на счете ({Balance})");
-            Transaction transaction = Transaction.Create(value, DateTime.UtcNow, category, source);
-            Balance -= value;
+            ExpenseTransaction transaction = ExpenseTransaction.Create(DateTime.UtcNow, value, category, source, Id);
+            Balance = transaction.ApplyBalance(Balance);
             _transactions.Add(transaction);
             AddDomainEvent(new BalanceReducedEvent(Id, value.Value));
             SetUpdateDate();

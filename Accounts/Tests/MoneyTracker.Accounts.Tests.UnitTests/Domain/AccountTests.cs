@@ -21,7 +21,6 @@ namespace MoneyTracker.Accounts.Tests.UnitTests.Domain
         public void CanNotExpenseMoreThanHas()
         {
             Account account = Account.Create("name", GetRubles(100));
-
             ExpenseCategory category = new ExpenseCategory("name");
             TransactionSource source = new TransactionSource("111");
 

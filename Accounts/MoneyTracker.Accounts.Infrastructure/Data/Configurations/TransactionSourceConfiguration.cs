@@ -27,7 +27,7 @@ namespace MoneyTracker.Accounts.Infrastructure.Data.Configurations
             builder.HasIndex(ts => ts.Name)
                    .IsUnique();
 
-            builder.Ignore("Id");
+            //builder.Ignore("Id");
 
             builder.HasData(
                 new { Name = "Manual", SourceType = "Standard" }, // Ручное добавление

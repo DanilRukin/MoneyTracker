@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MoneyTracker.Accounts.Domain.Categories;
+using MoneyTracker.Accounts.Domain.Transactions;
 
 namespace MoneyTracker.Accounts.Infrastructure.Data.Configurations
 {
@@ -19,19 +20,20 @@ namespace MoneyTracker.Accounts.Infrastructure.Data.Configurations
                 .HasMaxLength(64)
                 .IsRequired();
 
-            builder.HasDiscriminator<string>("Type")
-                .HasValue<IncomeCategory>("Income")
-                .HasValue<ExpenseCategory>("Expense")
-                .HasValue<TransferIncomeCategory>("TransferIncome")
-                .HasValue<TransferExpenseCategory>("TransferExpense");
+            // Дискриминатор с конвертером enum -> string
+            builder.HasDiscriminator(e => e.Type)
+                .HasValue<IncomeCategory>(TransactionType.Income)
+                .HasValue<ExpenseCategory>(TransactionType.Expense)
+                .HasValue<TransferIncomeCategory>(TransactionType.Income) // Тот же тип что у родителя
+                .HasValue<TransferExpenseCategory>(TransactionType.Expense);
+
+            // Конвертер для enum в БД
+            builder.Property(e => e.Type)
+                .HasConversion<string>()
+                .HasMaxLength(20);
 
             builder.HasIndex(c => new { c.Name, c.Type })
-                .IsUnique();
-
-            builder.Ignore("Id");
-
-            builder.HasData(new { Name = "Пополение переводом с другого счета", Type = "TransferIncome" });
-            builder.HasData(new { Name = "Снятия для перевода на другой счет", Type = "TransferExpense" });
+                .IsUnique();            
         }
     }
 }
