@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MoneyTracker.Accounts.Domain.Transactions;
 using MoneyTracker.Accounts.Domain.Categories;
+using MoneyTracker.Accounts.Domain.Transfers;
 
 namespace MoneyTracker.Accounts.Domain.Accounts
 {
@@ -52,6 +53,20 @@ namespace MoneyTracker.Accounts.Domain.Accounts
         /// Транзакции
         /// </summary>
         public virtual IReadOnlyCollection<Transaction> Transactions => _transactions.AsReadOnly();
+
+        private readonly List<Transfer> _outgoingTransfers = new();
+
+        /// <summary>
+        /// Исходящие переводы
+        /// </summary>
+        public virtual IReadOnlyCollection<Transfer> OutgoingTransfers => _outgoingTransfers.AsReadOnly();
+
+        private readonly List<Transfer> _incomingTransfers = new();
+
+        /// <summary>
+        /// Входящие переводы
+        /// </summary>
+        public virtual IReadOnlyCollection<Transfer> IncomingTransfers => _incomingTransfers.AsReadOnly();
 
         protected Account() { }
 

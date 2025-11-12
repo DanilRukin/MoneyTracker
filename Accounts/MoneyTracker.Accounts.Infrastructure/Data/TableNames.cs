@@ -15,5 +15,6 @@ namespace MoneyTracker.Accounts.Infrastructure.Data
         public const string Currencies = "Currencies";
 
         public const string TransactionSources = "TransactionSources";
+        public const string Transfers = "Transfers";
     }
 }

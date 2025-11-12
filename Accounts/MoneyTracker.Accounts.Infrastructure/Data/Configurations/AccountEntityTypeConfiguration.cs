@@ -50,8 +50,18 @@ namespace MoneyTracker.Accounts.Infrastructure.Data.Configurations
 
             // Настройка связи с Transaction
             builder.HasMany(a => a.Transactions)
+              .WithOne()
+              .HasForeignKey(t => t.AccountId)
+              .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(a => a.OutgoingTransfers)
+               .WithOne()
+               .HasForeignKey(t => t.FromAccountId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(a => a.IncomingTransfers)
                    .WithOne()
-                   .HasForeignKey("AccountId")
+                   .HasForeignKey(t => t.ToAccountId)
                    .OnDelete(DeleteBehavior.Cascade);
 
             // Индексы

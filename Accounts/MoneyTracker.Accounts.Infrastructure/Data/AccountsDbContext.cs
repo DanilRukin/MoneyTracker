@@ -3,6 +3,7 @@ using MoneyTracker.Accounts.Domain.Accounts;
 using MoneyTracker.Accounts.Domain.Categories;
 using MoneyTracker.Accounts.Domain.Currencies;
 using MoneyTracker.Accounts.Domain.Transactions;
+using MoneyTracker.Accounts.Domain.Transfers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,5 +32,7 @@ namespace MoneyTracker.Accounts.Infrastructure.Data
         public DbSet<Category> Categories { get; set; }
 
         public DbSet<TransactionSource> TransactionSources { get; set; }
+
+        public DbSet<Transfer> Transfers { get; set; }
     }
 }

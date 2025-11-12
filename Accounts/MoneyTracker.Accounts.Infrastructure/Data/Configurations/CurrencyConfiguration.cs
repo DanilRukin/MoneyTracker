@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MoneyTracker.Accounts.Domain.Currencies;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MoneyTracker.Accounts.Infrastructure.Data.Configurations
 {
@@ -43,11 +38,11 @@ namespace MoneyTracker.Accounts.Infrastructure.Data.Configurations
 
             // Предопределенные валюты
             builder.HasData(
-                new { Name = "US Dollar", Symbol = '$' },
-                new { Name = "Euro", Symbol = '€' },
-                new { Name = "Russian Ruble", Symbol = '₽' },
-                new { Name = "British Pound", Symbol = '£' },
-                new { Name = "Japanese Yen", Symbol = '¥' }
+                new { Name = "US Dollar", Symbol = '$', Id = 1 },
+                new { Name = "Euro", Symbol = '€', Id = 2 },
+                new { Name = "Russian Ruble", Symbol = '₽', Id = 3 },
+                new { Name = "British Pound", Symbol = '£', Id = 4 },
+                new { Name = "Japanese Yen", Symbol = '¥', Id = 5 }
             );
         }
     }

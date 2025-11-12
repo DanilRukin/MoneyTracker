@@ -19,10 +19,6 @@ namespace MoneyTracker.Accounts.Infrastructure.Data.Configurations
                 .HasMaxLength(128)
                 .IsRequired();
 
-            builder.HasDiscriminator<string>("SourceType")
-                .HasValue<TransactionSource>("Standard")
-                .HasValue<TransferTransactionSource>("Transfer");
-
 
             builder.HasIndex(ts => ts.Name)
                    .IsUnique();
@@ -30,11 +26,10 @@ namespace MoneyTracker.Accounts.Infrastructure.Data.Configurations
             //builder.Ignore("Id");
 
             builder.HasData(
-                new { Name = "Manual", SourceType = "Standard" }, // Ручное добавление
-                new { Name = "BankImport", SourceType = "Standard" }, // Импорт из банка
-                new { Name = "Recurring", SourceType = "Standard" }, // Регулярная операция
-                new { Name = "System", SourceType = "Standard" }, // Системная операция
-                new { Name = "TransferTransactionSource", SourceType = "Transfer" } // Перевод между счетами
+                new { Name = "Manual", Id = 1 }, // Ручное добавление
+                new { Name = "BankImport", Id = 2 }, // Импорт из банка
+                new { Name = "Recurring", Id = 3 }, // Регулярная операция
+                new { Name = "System", Id = 4 } // Системная операция
             );
         }
     }
