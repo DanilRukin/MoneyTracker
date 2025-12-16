@@ -2,6 +2,6 @@
 {
     internal interface IIncomeCategoryRepository
     {
-        IncomeCategory GetByName(string name);
+        IncomeCategory? GetByName(string name);
     }
 }

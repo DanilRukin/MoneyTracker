@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11205.157 d18.0
+VisualStudioVersion = 18.0.11205.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Accounts", "Accounts", "{FB692A27-3035-4AD9-B667-DD62D5D998B1}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyTracker.Accounts.Infrastructure", "Accounts\MoneyTracker.Accounts.Infrastructure\MoneyTracker.Accounts.Infrastructure.csproj", "{62A71074-6442-459F-A702-889558BC5EDF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyTracker.Accounts.Application", "Accounts\MoneyTracker.Accounts.Application\MoneyTracker.Accounts.Application.csproj", "{54192342-03BC-497C-9304-8B734036412E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyTracker.Accounts.Integration", "Accounts\MoneyTracker.Accounts.Integration\MoneyTracker.Accounts.Integration.csproj", "{A12CC210-DC11-447F-B0D5-DFD0766338C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +45,10 @@ Global
 		{54192342-03BC-497C-9304-8B734036412E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54192342-03BC-497C-9304-8B734036412E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54192342-03BC-497C-9304-8B734036412E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A12CC210-DC11-447F-B0D5-DFD0766338C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A12CC210-DC11-447F-B0D5-DFD0766338C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A12CC210-DC11-447F-B0D5-DFD0766338C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A12CC210-DC11-447F-B0D5-DFD0766338C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +59,7 @@ Global
 		{D1BE6398-04D9-4E75-9AC3-01EE92E7685A} = {B384B289-5A3B-4169-8971-7713496CF603}
 		{62A71074-6442-459F-A702-889558BC5EDF} = {FB692A27-3035-4AD9-B667-DD62D5D998B1}
 		{54192342-03BC-497C-9304-8B734036412E} = {FB692A27-3035-4AD9-B667-DD62D5D998B1}
+		{A12CC210-DC11-447F-B0D5-DFD0766338C2} = {FB692A27-3035-4AD9-B667-DD62D5D998B1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {486B1811-A542-4DBA-AE69-AE13B349C177}

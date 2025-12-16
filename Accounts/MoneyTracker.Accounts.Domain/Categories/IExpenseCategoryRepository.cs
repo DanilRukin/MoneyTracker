@@ -2,6 +2,6 @@
 {
     internal interface IExpenseCategoryRepository
     {
-        ExpenseCategory GetByName(string name);
+        ExpenseCategory? GetByName(string name);
     }
 }

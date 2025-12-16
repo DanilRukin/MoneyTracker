@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using MoneyTracker.Accounts.Application.Data;
 using MoneyTracker.Accounts.Domain;
 using MoneyTracker.Accounts.Domain.Accounts;
 using MoneyTracker.Accounts.Domain.Currencies;
@@ -9,32 +10,26 @@ namespace MoneyTracker.Accounts.Application.Commands.CreateAccount;
 
 internal class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, Result<Guid>>
 {
-    private readonly IAccountsRepository _accountsRepository;
-    private readonly ICurrencyRepository _currencyRepository;
-    private readonly IDomainEventDispatcher _dispatcher;
+    private readonly IUnitOfWork _unitOfWork;
 
     internal CreateAccountCommandHandler(
-        IAccountsRepository accountsRepository,
-        ICurrencyRepository currencyRepository,
-        IDomainEventDispatcher dispatcher)
+        IUnitOfWork unitOfWork)
     {
-        _accountsRepository = accountsRepository;
-        _currencyRepository = currencyRepository;
-        _dispatcher = dispatcher;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<Guid>> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            Currency currency = _currencyRepository.GetByCode(request.CurrencyCode);
+            Currency? currency = _unitOfWork.Currencies.GetByCode(request.CurrencyCode);
             if (currency is null)
                 return Result<Guid>.NotFound("moneytracker.accounts.application.currency_not_found"); ;
             MoneyValue initialBalance = new MoneyValue(request.InitialBalance, currency);
             Account account = Account.Create(request.Name, initialBalance);
 
-            _accountsRepository.Save(account);
-            await _dispatcher.DispatchAndClearEvents([account]);
+            _unitOfWork.Accounts.Save(account);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Success(account.Id);
         }
