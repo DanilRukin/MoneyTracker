@@ -5,7 +5,7 @@ using MoneyTracker.Accounts.Application.Outbox;
 using MoneyTracker.Accounts.Infrastructure.Data;
 using Polly;
 using Polly.Retry;
-using SharedKernel;
+using MoneyTracker.SharedKernel;
 
 namespace MoneyTracker.Accounts.Infrastructure.Outbox;
 

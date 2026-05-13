@@ -1,14 +1,9 @@
 ﻿using MoneyTracker.Accounts.Domain.Accounts.Events;
-using SharedKernel;
-using SharedKernel.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MoneyTracker.Accounts.Domain.Transactions;
 using MoneyTracker.Accounts.Domain.Categories;
+using MoneyTracker.Accounts.Domain.Transactions;
 using MoneyTracker.Accounts.Domain.Transfers;
+using MoneyTracker.SharedKernel;
+using MoneyTracker.SharedKernel.Interfaces;
 
 namespace MoneyTracker.Accounts.Domain.Accounts
 {

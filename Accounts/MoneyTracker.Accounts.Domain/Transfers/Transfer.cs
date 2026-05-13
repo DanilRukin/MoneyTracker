@@ -1,6 +1,6 @@
 ﻿using MoneyTracker.Accounts.Domain.Transfers.Events;
-using SharedKernel;
-using SharedKernel.Interfaces;
+using MoneyTracker.SharedKernel;
+using MoneyTracker.SharedKernel.Interfaces;
 
 namespace MoneyTracker.Accounts.Domain.Transfers
 {

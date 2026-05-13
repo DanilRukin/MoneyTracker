@@ -1,10 +1,9 @@
 ﻿using MediatR;
 using MoneyTracker.Accounts.Application.Data;
-using MoneyTracker.Accounts.Domain;
 using MoneyTracker.Accounts.Domain.Accounts;
 using MoneyTracker.Accounts.Domain.Currencies;
-using SharedKernel.Interfaces;
-using SharedKernel.Results;
+using MoneyTracker.SharedKernel.DomainCore;
+using MoneyTracker.SharedKernel.Results;
 
 namespace MoneyTracker.Accounts.Application.Commands.CreateAccount;
 

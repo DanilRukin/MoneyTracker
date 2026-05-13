@@ -8,11 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MoneyTracker.Accounts.Domain\MoneyTracker.Accounts.Domain.csproj" />
-    <ProjectReference Include="..\MoneyTracker.Accounts.Integration\MoneyTracker.Accounts.Integration.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Queries\" />
   </ItemGroup>
 
 </Project>

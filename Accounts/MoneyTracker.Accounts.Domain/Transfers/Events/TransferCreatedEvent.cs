@@ -1,4 +1,4 @@
-﻿using SharedKernel;
+﻿using MoneyTracker.SharedKernel;
 
 namespace MoneyTracker.Accounts.Domain.Transfers.Events
 {

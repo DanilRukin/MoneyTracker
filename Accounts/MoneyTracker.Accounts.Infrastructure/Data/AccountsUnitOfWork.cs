@@ -4,8 +4,8 @@ using MoneyTracker.Accounts.Domain.Accounts;
 using MoneyTracker.Accounts.Domain.Categories;
 using MoneyTracker.Accounts.Domain.Currencies;
 using MoneyTracker.Accounts.Domain.Transfers;
-using SharedKernel;
-using SharedKernel.Interfaces;
+using MoneyTracker.SharedKernel;
+using MoneyTracker.SharedKernel.Interfaces;
 
 namespace MoneyTracker.Accounts.Infrastructure.Data;
 

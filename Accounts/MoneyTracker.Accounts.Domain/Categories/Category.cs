@@ -1,5 +1,5 @@
 ﻿using MoneyTracker.Accounts.Domain.Transactions;
-using SharedKernel;
+using MoneyTracker.SharedKernel;
 using System;
 using System.Collections.Generic;
 using System.Linq;

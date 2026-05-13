@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SharedKernel.Results;
+using MoneyTracker.SharedKernel.Results;
 
 namespace MoneyTracker.Accounts.Application.Commands.CreateAccount;
 
